@@ -268,6 +268,38 @@
       font-size: 0.8rem;
       color: var(--ink-muted);
     }
+    
+    /* Decision Table */
+    .decision-table td:first-child { font-weight: 500; }
+    .decision-table td:nth-child(2) { font-weight: 600; color: var(--ink); }
+    .decision-table td:last-child { font-size: 0.8rem; color: var(--ink-muted); }
+    
+    .trend-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .trend-badge.up { background: rgba(16,185,129,0.1); color: var(--green); }
+    .trend-badge.down { background: rgba(251,113,133,0.1); color: var(--coral); }
+    .trend-badge.warning { background: rgba(245,158,11,0.15); color: #B45309; }
+    .trend-badge.danger { background: rgba(251,113,133,0.15); color: #DC2626; }
+    .trend-badge.neutral { background: rgba(0,0,0,0.05); color: var(--ink-muted); }
+    
+    /* Alert Banner */
+    .alert-banner {
+      display: flex;
+      gap: 12px;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(251,113,133,0.05));
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: 12px;
+    }
+    .alert-banner .alert-icon { font-size: 1.2rem; }
+    .alert-banner strong { font-size: 0.9rem; display: block; margin-bottom: 4px; }
+    .alert-banner p { font-size: 0.85rem; color: var(--ink-soft); margin: 0; line-height: 1.5; }
   </style>
 </head>
 <body>
@@ -285,6 +317,85 @@
       <h1>Lowell, Massachusetts</h1>
       <p>Population 114,799 · Middlesex County · 2023 Data</p>
     </header>
+    
+    <!-- Decision-Maker Quick Reference -->
+    <section class="section" style="margin-bottom: 48px;">
+      <div class="section-header">
+        <span>📋</span>
+        <h2>Decision-Maker Quick Reference</h2>
+      </div>
+      
+      <div class="data-card" style="overflow-x: auto;">
+        <table class="data-table decision-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Value</th>
+              <th>Trend</th>
+              <th>Benchmark</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Population</strong></td>
+              <td>114,799</td>
+              <td><span class="trend-badge warning">⚠️ Stagnant</span></td>
+              <td>Was 115,554 in 2020</td>
+            </tr>
+            <tr>
+              <td><strong>Housing Units Needed</strong></td>
+              <td>3,000 by 2030</td>
+              <td><span class="trend-badge danger">🔴 Gap</span></td>
+              <td>HPP Target</td>
+            </tr>
+            <tr>
+              <td><strong>Homeownership</strong></td>
+              <td>44%</td>
+              <td><span class="trend-badge up">⬆️ 43.3%→44%</span></td>
+              <td>65% national</td>
+            </tr>
+            <tr>
+              <td><strong>FY2026 Budget</strong></td>
+              <td>$617.4M</td>
+              <td><span class="trend-badge up">⬆️ +5.9%</span></td>
+              <td>Pressure expected FY27</td>
+            </tr>
+            <tr>
+              <td><strong>School Utilization</strong></td>
+              <td>85%</td>
+              <td><span class="trend-badge down">⬇️ Declining</span></td>
+              <td>2,000 excess capacity</td>
+            </tr>
+            <tr>
+              <td><strong>Employment</strong></td>
+              <td>59,001</td>
+              <td><span class="trend-badge down">⬇️ −0.044%</span></td>
+              <td>4,000+ jobs lost regionally</td>
+            </tr>
+            <tr>
+              <td><strong>Poverty Rate</strong></td>
+              <td>16%</td>
+              <td><span class="trend-badge neutral">— Flat</span></td>
+              <td>12.4% national</td>
+            </tr>
+            <tr>
+              <td><strong>Foreign-Born</strong></td>
+              <td>29.6%</td>
+              <td><span class="trend-badge up">⬆️ from 28.8%</span></td>
+              <td>13.8% national</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="alert-banner" style="margin-top: 16px;">
+        <span class="alert-icon">⚠️</span>
+        <div>
+          <strong>Population Stagnation Warning</strong>
+          <p>May 2024 Master Plan warns of stagnating population with residents slowly moving out. Growth 2022→2023 was only 0.054% (62 people).</p>
+        </div>
+      </div>
+    </section>
     
     <!-- Population -->
     <section class="section">
@@ -569,6 +680,88 @@
       </div>
     </section>
     
+    <!-- Budget & Planning -->
+    <section class="section">
+      <div class="section-header">
+        <span>💰</span>
+        <h2>Budget & Planning</h2>
+      </div>
+      
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-value amber">$617.4M</div>
+          <div class="stat-label">FY2026 Budget</div>
+          <span class="stat-change up">↑ 5.9% YoY</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value coral">3,000</div>
+          <div class="stat-label">Housing Units Needed</div>
+          <span class="stat-change neutral">by 2030</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value blue">85%</div>
+          <div class="stat-label">School Utilization</div>
+          <span class="stat-change down">2K excess</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value purple">1,600</div>
+          <div class="stat-label">&lt;50% AMI Gap</div>
+          <span class="stat-change down">units short</span>
+        </div>
+      </div>
+      
+      <div class="two-col" style="margin-top: 20px;">
+        <div class="data-card">
+          <div class="data-card-header">Affordable Housing Gaps</div>
+          <div class="bar-list">
+            <div class="bar-item">
+              <div class="bar-meta"><span>&lt;50% AMI (shortage)</span><span style="color: var(--coral);">+1,600</span></div>
+              <div class="bar-track"><div class="bar-fill coral" style="width: 40%;"></div></div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-meta"><span>50-80% AMI (surplus)</span><span style="color: var(--green);">−6,000</span></div>
+              <div class="bar-track"><div class="bar-fill green" style="width: 100%;"></div></div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-meta"><span>&gt;80% AMI (shortage)</span><span style="color: var(--coral);">+4,300</span></div>
+              <div class="bar-track"><div class="bar-fill coral" style="width: 72%;"></div></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="data-card">
+          <div class="data-card-header">Infrastructure Projects</div>
+          <table class="data-table" style="font-size: 0.85rem;">
+            <tbody>
+              <tr><td>CSO Sewer Separation</td><td><span class="trend-badge up">In Progress</span></td></tr>
+              <tr><td>Complete Streets Plan</td><td><span class="trend-badge up">Updated 2024</span></td></tr>
+              <tr><td>LRTA Fare-Free Pilot</td><td><span class="trend-badge up">Dec 2024</span></td></tr>
+              <tr><td>FEMA Flood Maps</td><td><span class="trend-badge neutral">Updated 2021</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Environmental Concerns -->
+    <section class="section">
+      <div class="section-header">
+        <span>🚨</span>
+        <h2>Environmental Concerns</h2>
+      </div>
+      
+      <div class="two-col">
+        <div class="alert-banner" style="flex-direction: column; align-items: flex-start;">
+          <strong style="color: var(--coral);">☢️ Silresim Superfund Site</strong>
+          <p style="margin-top: 8px;">86 Tanner St — One of most contaminated sites in New England. EPA 5-year review Jan 2025. Active monitoring ongoing.</p>
+        </div>
+        <div class="alert-banner" style="flex-direction: column; align-items: flex-start;">
+          <strong style="color: var(--blue);">🌊 Merrimack River Flood Risk</strong>
+          <p style="margin-top: 8px;">River crested over flood stage May 2025. Properties in 100-year floodplain require NFIP insurance.</p>
+        </div>
+      </div>
+    </section>
+    
     <!-- Key Facts -->
     <section class="section">
       <div class="section-header">
@@ -591,7 +784,7 @@
         </div>
         <div class="fact-card">
           <h4>Transportation</h4>
-          <p>Commuter rail to Boston (~45 min). I-495 and Route 3 highway access.</p>
+          <p>Commuter rail to Boston (~45 min). I-495 and Route 3 highway access. Lowell Connector rated among state's most dangerous.</p>
         </div>
       </div>
     </section>
