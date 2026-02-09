@@ -346,6 +346,40 @@
       background: rgba(16,185,129,0.1);
       color: var(--green);
     }
+    .source-link {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 0.75rem;
+      color: var(--amber);
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+    .source-link:hover { opacity: 0.7; }
+    
+    .sources-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      font-size: 0.75rem;
+    }
+    .sources-row .sources-label {
+      color: var(--ink-muted);
+      font-weight: 500;
+    }
+    .sources-row a {
+      color: var(--amber);
+      text-decoration: none;
+      padding: 4px 10px;
+      background: rgba(245,158,11,0.08);
+      border-radius: 100px;
+      transition: background 0.2s;
+    }
+    .sources-row a:hover { background: rgba(245,158,11,0.15); }
     
     /* Decision Table */
     .decision-table td:first-child { font-weight: 500; }
@@ -471,7 +505,16 @@
         <div>
           <strong>Population Stagnation Warning</strong>
           <p>May 2024 Master Plan warns of stagnating population with residents slowly moving out. Growth 2022→2023 was only 0.054% (62 people).</p>
+          <a href="https://www.lowellma.gov/1665/Master-Plan" target="_blank" class="source-link" style="margin-top: 8px;">Source: Lowell Master Plan →</a>
         </div>
+      </div>
+      
+      <div class="sources-row">
+        <span class="sources-label">Data Sources:</span>
+        <a href="https://datausa.io/profile/geo/lowell-ma/" target="_blank">Data USA</a>
+        <a href="https://www.housing.ma/lowell/report" target="_blank">Housing.ma</a>
+        <a href="https://www.lowellma.gov" target="_blank">City of Lowell</a>
+        <a href="https://www.lowellsun.com" target="_blank">Lowell Sun</a>
       </div>
     </section>
     
@@ -518,6 +561,7 @@
           </table>
           <div class="tags">
             <span class="tag above">Asian 2× state avg</span>
+            <a href="https://datausa.io/profile/geo/lowell-ma/#demographics" target="_blank" class="source-link">Source →</a>
           </div>
         </div>
         
@@ -588,6 +632,7 @@
           </table>
           <div class="tags">
             <span class="tag above">Manufacturing 2× MA avg</span>
+            <a href="https://datausa.io/profile/geo/lowell-ma/#economy" target="_blank" class="source-link">Source →</a>
           </div>
         </div>
         
@@ -781,6 +826,7 @@
             <span class="timeline-item">Groundbreaking 2025</span>
             <span class="timeline-item">Occupancy 2027</span>
           </div>
+          <a href="https://www.uml.edu/magazine/spring-2024/linc.aspx" target="_blank" class="source-link">Source: UMass Lowell →</a>
         </div>
         
         <div class="project-card flagship">
@@ -798,6 +844,7 @@
             <span class="timeline-item">Construction Spring 2025</span>
             <span class="timeline-item">Complete 2032</span>
           </div>
+          <a href="https://lowellwater.com/" target="_blank" class="source-link">Source: Lowell Water →</a>
         </div>
         
         <div class="project-card">
@@ -814,6 +861,7 @@
             <span class="timeline-item">Multi-phase</span>
             <span class="timeline-item">Ongoing</span>
           </div>
+          <a href="https://www.lowellma.gov/731/Hamilton-Canal-District-Plan" target="_blank" class="source-link">Source: City of Lowell →</a>
         </div>
         
         <div class="project-card">
@@ -828,6 +876,7 @@
           <div class="project-timeline">
             <span class="timeline-item">In Development</span>
           </div>
+          <a href="https://www.lhma.org/238/Projects" target="_blank" class="source-link">Source: Lowell Housing Authority →</a>
         </div>
         
         <div class="project-card">
@@ -842,6 +891,7 @@
           <div class="project-timeline">
             <span class="timeline-item active">Dec 2024 – Jun 2026</span>
           </div>
+          <a href="https://lrta.com/alerts/the-lrta-announces-a-temporary-fare-free-pilot-program-commencing-december-1-2024/" target="_blank" class="source-link">Source: LRTA →</a>
         </div>
         
         <div class="project-card">
@@ -856,6 +906,7 @@
           <div class="project-timeline">
             <span class="timeline-item">Construction</span>
           </div>
+          <a href="https://www.lowellma.gov/736/Acre-Plan" target="_blank" class="source-link">Source: City of Lowell →</a>
         </div>
       </div>
     </section>
@@ -935,10 +986,12 @@
         <div class="alert-banner" style="flex-direction: column; align-items: flex-start;">
           <strong style="color: var(--coral);">☢️ Silresim Superfund Site</strong>
           <p style="margin-top: 8px;">86 Tanner St — One of most contaminated sites in New England. EPA 5-year review Jan 2025. Active monitoring ongoing.</p>
+          <a href="https://www.epa.gov/superfund/silresim" target="_blank" class="source-link" style="margin-top: 8px;">Source: EPA →</a>
         </div>
         <div class="alert-banner" style="flex-direction: column; align-items: flex-start;">
           <strong style="color: var(--blue);">🌊 Merrimack River Flood Risk</strong>
           <p style="margin-top: 8px;">River crested over flood stage May 2025. Properties in 100-year floodplain require NFIP insurance.</p>
+          <a href="https://msc.fema.gov/portal/home" target="_blank" class="source-link" style="margin-top: 8px;">Source: FEMA →</a>
         </div>
       </div>
     </section>
@@ -971,7 +1024,15 @@
     </section>
     
     <footer>
-      <p>Data: US Census ACS 2023, DataUSA, MA DPH</p>
+      <p style="margin-bottom: 8px;"><strong>Primary Sources:</strong></p>
+      <div class="sources-row" style="justify-content: center; border: none; padding: 0; margin: 0;">
+        <a href="https://datausa.io/profile/geo/lowell-ma/" target="_blank">Data USA</a>
+        <a href="https://www.lowellma.gov" target="_blank">City of Lowell</a>
+        <a href="https://www.housing.ma/lowell/report" target="_blank">Housing.ma</a>
+        <a href="https://www.lowellsun.com" target="_blank">Lowell Sun</a>
+        <a href="https://www.mass.gov" target="_blank">Mass.gov</a>
+        <a href="https://lrta.com" target="_blank">LRTA</a>
+      </div>
     </footer>
   </div>
 </body>
