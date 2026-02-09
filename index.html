@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lowell, MA — The City They Don't Tell You About</title>
+  <title>Lowell, MA — Urban Planning Data Brief</title>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -16,6 +16,8 @@
       --muted: #6B5D55;
       --charcoal: #1C1917;
       --leaf: #C2A476;
+      --green: #22C55E;
+      --red: #EF4444;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -24,208 +26,277 @@
       color: var(--ink);
       min-height: 100vh;
       position: relative;
-      overflow-x: hidden;
     }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.12'/></svg>");
-      mix-blend-mode: multiply;
-      opacity: 0.35;
-      z-index: 0;
-    }
-    .bg-blobs { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-    .bg-blobs span {
-      position: absolute;
-      width: 280px;
-      height: 240px;
-      background: radial-gradient(circle at top left, #ffdcb0, #fff1d4);
-      border-radius: 48% 52% 58% 42% / 53% 45% 55% 47%;
-      filter: blur(2px);
-      opacity: 0.55;
-    }
-    .bg-blobs span:nth-child(1) { top: -40px; left: -20px; transform: rotate(-6deg); }
-    .bg-blobs span:nth-child(2) { bottom: 10%; right: -40px; transform: rotate(8deg); }
-    .bg-blobs span:nth-child(3) { top: 40%; left: 60%; width: 180px; height: 160px; opacity: 0.4; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 40px 24px; }
     h1, h2, h3 { font-family: 'Fraunces', serif; font-weight: 700; }
-    .container { max-width: 900px; margin: 0 auto; padding: 60px 24px; position: relative; z-index: 1; }
+    h1 { font-size: 2.5rem; margin-bottom: 8px; }
+    h2 { font-size: 1.5rem; margin-bottom: 16px; color: var(--charcoal); border-bottom: 2px solid var(--amber); padding-bottom: 8px; }
+    .subtitle { color: var(--muted); font-size: 1.1rem; margin-bottom: 40px; }
     
-    .hero { text-align: center; margin-bottom: 60px; }
-    .hero h1 { font-size: 3rem; margin-bottom: 16px; transform: rotate(-0.5deg); }
-    .hero .tagline { font-size: 1.3rem; color: var(--muted); margin-bottom: 32px; line-height: 1.6; }
-    
-    .section { margin-bottom: 50px; }
-    .section-title { font-size: 1.8rem; margin-bottom: 24px; transform: rotate(-0.3deg); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 40px; }
     
     .card {
-      background: var(--paper);
-      border: 2px solid var(--charcoal);
-      border-radius: 22px 18px 26px 20px;
-      padding: 24px;
-      margin-bottom: 20px;
-      box-shadow: 5px 7px 0 var(--charcoal);
+      background: white;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
-    .card:nth-child(odd) { transform: rotate(-0.5deg); }
-    .card:nth-child(even) { transform: rotate(0.4deg); }
-    .card h3 { margin-bottom: 12px; font-size: 1.3rem; }
-    .card p { color: var(--muted); line-height: 1.6; }
-    .card .stat { font-size: 2rem; font-weight: 700; color: var(--coral); }
+    .card h3 { font-size: 1.1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .card .metric { font-size: 2rem; font-weight: 700; margin-bottom: 4px; }
+    .card .metric.green { color: var(--green); }
+    .card .metric.red { color: var(--red); }
+    .card .metric.amber { color: var(--amber); }
+    .card .label { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; }
+    .card .detail { font-size: 0.9rem; line-height: 1.5; }
+    .card .source { font-size: 0.75rem; color: var(--muted); margin-top: 12px; font-style: italic; }
     
-    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-    
-    .highlight { 
-      background: linear-gradient(135deg, var(--amber), #d97706);
-      color: var(--charcoal);
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-weight: 600;
+    .alert { 
+      background: #FEF2F2; 
+      border-left: 4px solid var(--red);
+      padding: 16px;
+      margin-bottom: 16px;
+      border-radius: 0 8px 8px 0;
     }
+    .alert.warning { background: #FFFBEB; border-left-color: var(--amber); }
+    .alert.info { background: #EFF6FF; border-left-color: #3B82F6; }
+    .alert h4 { font-size: 1rem; margin-bottom: 8px; }
+    .alert p { font-size: 0.9rem; color: var(--muted); }
     
-    .badge {
-      display: inline-block;
-      padding: 6px 14px;
-      background: #fff1d4;
-      border: 1px dashed var(--leaf);
-      border-radius: 999px;
-      font-size: 0.85rem;
-      margin: 4px;
-    }
+    .bar-chart { margin-top: 16px; }
+    .bar-row { display: flex; align-items: center; margin-bottom: 8px; }
+    .bar-label { width: 120px; font-size: 0.85rem; }
+    .bar-container { flex: 1; background: #f0f0f0; border-radius: 4px; height: 24px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-size: 0.75rem; color: white; font-weight: 600; }
     
-    .quote {
-      border-left: 4px solid var(--coral);
-      padding-left: 20px;
-      font-style: italic;
-      margin: 20px 0;
-    }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.9rem; }
+    th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #e5e5e5; }
+    th { background: var(--paper); font-weight: 600; }
     
-    footer {
-      text-align: center;
-      padding: 32px;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-    footer a { color: var(--coral); }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+    .tag.critical { background: #FEE2E2; color: #B91C1C; }
+    .tag.warning { background: #FEF3C7; color: #B45309; }
+    .tag.ok { background: #D1FAE5; color: #047857; }
+    
+    footer { text-align: center; padding: 40px; color: var(--muted); font-size: 0.85rem; }
   </style>
 </head>
 <body>
-  <div class="bg-blobs">
-    <span></span><span></span><span></span>
-  </div>
-  
   <div class="container">
-    <section class="hero">
-      <h1>Lowell, MA</h1>
-      <p class="tagline">Where the American Industrial Revolution began, Beat poetry was born, and Cambodian refugees built America's second-largest community. A mill city haunted by its workers and home to Hollywood legends.</p>
-    </section>
+    <h1>Lowell, MA</h1>
+    <p class="subtitle">Urban Planning Data Brief — Decision-Making Metrics for City Government</p>
     
-    <!-- Famous Births -->
-    <section class="section">
-      <h2 class="section-title">🎭 Born in Lowell</h2>
-      <div class="grid-2">
-        <div class="card">
-          <h3>Jack Kerouac</h3>
-          <p>Father of the <span class="highlight">Beat Generation</span>. Born March 12, 1922 on Lupine Road. Wrote "On the Road" — the novel that defined a generation. His grave in Edson Cemetery is a literary pilgrimage site.</p>
-        </div>
-        <div class="card">
-          <h3>Bette Davis</h3>
-          <p>Hollywood legend. <span class="highlight">2 Academy Awards</span>. Born April 5, 1908 at 22 Chester Street. First woman to receive 10 Oscar nominations. The phrase "Fasten your seatbelts" came from her.</p>
-        </div>
-        <div class="card">
-          <h3>James McNeill Whistler</h3>
-          <p>Painted <span class="highlight">"Whistler's Mother"</span> — one of the most famous American paintings ever. Born July 11, 1834. The painting is in the Musée d'Orsay in Paris.</p>
-        </div>
-        <div class="card">
-          <h3>"Irish" Micky Ward</h3>
-          <p>World boxing champion. Subject of <span class="highlight">"The Fighter" (2010)</span> starring Mark Wahlberg. His trilogy with Arturo Gatti is considered among boxing's greatest.</p>
-        </div>
-      </div>
-    </section>
+    <!-- Critical Alerts -->
+    <div class="alert">
+      <h4>⚠️ Population Stagnation Warning</h4>
+      <p>May 2024 Master Plan warns of stagnating population with residents slowly moving out. Growth 2022→2023 was only 0.054% (62 people).</p>
+    </div>
     
-    <!-- Cambodian Story -->
-    <section class="section">
-      <h2 class="section-title">🇰🇭 The Cambodian Story</h2>
-      <div class="card" style="background: linear-gradient(135deg, #fff7e2, #fff1d4);">
-        <div class="stat">~25%</div>
-        <h3>of Lowell's population is Cambodian-American</h3>
-        <p>After the fall of Phnom Penh to the Khmer Rouge in 1975, refugees fled genocide. Starting in the 1980s, Lowell became home to the <span class="highlight">2nd largest Cambodian population in the US</span> (after Long Beach, CA).</p>
-        <p style="margin-top: 16px;">In 2022, Lowell made history by electing Cambodian-Americans to major political positions — a first for refugees of the Khmer Rouge era.</p>
-        <div class="quote">"Cambodian refugees poured into Lowell in the 1980s, a time of economic and cultural rebirth for the city."</div>
-      </div>
-    </section>
+    <div class="alert warning">
+      <h4>🏠 Affordable Housing Gap</h4>
+      <p>1,600 unit shortage for households earning <50% AMI. Housing Production Plan targets 3,000 new units by 2030.</p>
+    </div>
     
-    <!-- Dark Side -->
-    <section class="section">
-      <h2 class="section-title">⚠️ The Dark Side</h2>
-      <div class="grid-2">
-        <div class="card">
-          <h3>Silresim Superfund Site</h3>
-          <p><span class="highlight">86 Tanner Street</span> — One of the most contaminated sites in New England. Since 1971, chemical waste reclamation poisoned 4.5 acres of soil and groundwater. EPA still monitoring as of January 2025.</p>
-        </div>
-        <div class="card">
-          <h3>Asian Boyz Gang</h3>
-          <p>DOJ prosecutions ongoing. In <span class="highlight">July 2023, 9 members arrested</span> for meth trafficking and illegal firearms. After their takedown, rivals moved in — 36% of 2022 shootings were gang-related.</p>
-        </div>
-        <div class="card">
-          <h3>The Fentanyl Crisis</h3>
-          <p>DEA identifies fentanyl as the <span class="highlight">#1 drug threat</span> in Lowell. The synthetic opioid is responsible for most overdose deaths in the area.</p>
-        </div>
-        <div class="card">
-          <h3>Poverty Rate: 16%</h3>
-          <p>Higher than the 12.4% national average. The largest demographic living in poverty: <span class="highlight">Males 18-24</span>. Despite $76K median household income.</p>
-        </div>
-      </div>
-    </section>
-    
-    <!-- Haunted -->
-    <section class="section">
-      <h2 class="section-title">👻 The Haunted Mills</h2>
+    <!-- Key Metrics Grid -->
+    <h2>📊 Key Planning Metrics</h2>
+    <div class="grid">
       <div class="card">
-        <h3>Boott Cotton Mill Ghosts</h3>
-        <p>Workers report <span class="highlight">apparitions of mill workers killed on the job</span> during the 1800s. Shadowy figures, unexplained footsteps, and the sounds of machinery that hasn't run in over a century.</p>
-        <p style="margin-top: 12px;">Featured on TV's Ghost Hunters. The mills ran from 1835 to 1955 — over a million workers passed through.</p>
+        <h3>🏠 Housing</h3>
+        <div class="metric amber">3,000</div>
+        <div class="label">New units needed by 2030</div>
+        <div class="detail">
+          <table>
+            <tr><td><50% AMI gap</td><td class="red">+1,600 units</td></tr>
+            <tr><td>50-80% AMI</td><td class="green">-6,000 (surplus)</td></tr>
+            <tr><td>>80% AMI gap</td><td class="red">+4,300 units</td></tr>
+          </table>
+        </div>
+        <div class="source">Source: Housing.ma, Housing Production Plan 2024</div>
       </div>
+      
       <div class="card">
-        <h3>The Witch Bonney</h3>
-        <p>A mysterious grave in Lowell Cemetery. Local legend says she was a <span class="highlight">mill girl who died in an accident</span>, or possibly a witch hanged during the Salem trials. The gravestone tells a different story — but her spirit allegedly remains.</p>
-        <p style="margin-top: 12px;">The Kerouac 5K race runs through the cemetery each fall.</p>
+        <h3>💰 Budget FY2026</h3>
+        <div class="metric">$617.4M</div>
+        <div class="label">Operating Budget (+5.9% YoY)</div>
+        <div class="detail">
+          FY2025 grew $33M (6%) over prior year. City anticipates "fiscal pressures and policy decisions" for FY2027.
+        </div>
+        <div class="source">Source: Lowell Sun, Dec 2025</div>
       </div>
-    </section>
+      
+      <div class="card">
+        <h3>🎓 School Capacity</h3>
+        <div class="metric green">2,000</div>
+        <div class="label">Excess student capacity</div>
+        <div class="detail">
+          <table>
+            <tr><td>Total capacity</td><td>13,300</td></tr>
+            <tr><td>Current enrollment</td><td>11,299</td></tr>
+            <tr><td>Utilization</td><td>85%</td></tr>
+          </table>
+        </div>
+        <div class="source">Source: City Annual Report</div>
+      </div>
+      
+      <div class="card">
+        <h3>🚰 Infrastructure</h3>
+        <div class="metric red">CSO</div>
+        <div class="label">Combined Sewer Overflow Active</div>
+        <div class="detail">
+          Separation projects underway: Humphrey's Brook, Billing Brook, Tilden Street. ARPA funding allocated. Smoke testing Nov 2025.
+        </div>
+        <div class="source">Source: Lowell Wastewater Utility</div>
+      </div>
+      
+      <div class="card">
+        <h3>🚗 Transportation</h3>
+        <div class="metric amber">27.5 min</div>
+        <div class="label">Average commute time</div>
+        <div class="detail">
+          <strong>73%</strong> drive alone<br>
+          <strong>10%</strong> work from home<br>
+          Lowell Connector rated among state's most dangerous roads. Bridges create traffic "pinch points."
+        </div>
+        <div class="source">Source: Data USA, MassDOT</div>
+      </div>
+      
+      <div class="card">
+        <h3>🏘️ Homeownership</h3>
+        <div class="metric red">44%</div>
+        <div class="label">vs 65% national average</div>
+        <div class="detail">
+          56% renter population. More than half of renters spend 30%+ of income on housing (cost-burdened).
+        </div>
+        <div class="source">Source: Data USA, Governing.com</div>
+      </div>
+    </div>
     
-    <!-- Industrial Revolution -->
-    <section class="section">
-      <h2 class="section-title">🏭 Birthplace of American Industry</h2>
-      <div class="card" style="background: linear-gradient(135deg, #fff7e2, #fff1d4);">
-        <h3>First Planned Industrial City in America</h3>
-        <p>In the 1820s, Francis Cabot Lowell studied British textile mills and built the first water-powered cotton mill in America. The city that bears his name became the <span class="highlight">"Cradle of the Industrial Revolution"</span>.</p>
-        <p style="margin-top: 16px;"><strong>5.6 miles of canals</strong> powered dozens of mills. At its peak, Lowell produced more textiles than anywhere else in America.</p>
-        <p style="margin-top: 16px;">Today, the <span class="highlight">Lowell National Historical Park</span> preserves this legacy. The old mills? Many are now loft apartments renting for $1,848+/month.</p>
+    <!-- Demographics -->
+    <h2>👥 Population Demographics</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Population Trend</h3>
+        <div class="metric">114,799</div>
+        <div class="label">2023 Population (+0.054% from 2022)</div>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <span class="bar-label">White (Non-Hisp)</span>
+            <div class="bar-container"><div class="bar-fill" style="width: 44%; background: var(--amber);">44.2%</div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Asian</span>
+            <div class="bar-container"><div class="bar-fill" style="width: 21%; background: var(--coral);">21%</div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Hispanic</span>
+            <div class="bar-container"><div class="bar-fill" style="width: 19%; background: #8B5CF6;">19.3%</div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Black</span>
+            <div class="bar-container"><div class="bar-fill" style="width: 10%; background: #3B82F6;">10.1%</div></div>
+          </div>
+        </div>
       </div>
-    </section>
+      
+      <div class="card">
+        <h3>Key Demographics</h3>
+        <table>
+          <tr><td>Median Age</td><td><strong>35.5</strong> (younger than MA avg)</td></tr>
+          <tr><td>Foreign-Born</td><td><strong>29.6%</strong> (2x national avg)</td></tr>
+          <tr><td>US Citizens</td><td><strong>86.3%</strong> (↓ from 87% in 2022)</td></tr>
+          <tr><td>Poverty Rate</td><td><strong>16%</strong> <span class="tag warning">Above 12.4% nat'l</span></td></tr>
+          <tr><td>Health Coverage</td><td><strong>96%</strong> (32.9% Medicaid)</td></tr>
+        </table>
+      </div>
+    </div>
     
-    <!-- Quick Stats -->
-    <section class="section">
-      <h2 class="section-title">📊 By The Numbers</h2>
-      <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
-        <span class="badge">Pop: 114,799</span>
-        <span class="badge">Median Age: 35.5</span>
-        <span class="badge">29.6% Foreign-Born</span>
-        <span class="badge">44% Homeownership</span>
-        <span class="badge">21% Asian</span>
-        <span class="badge">$395K Median Home</span>
-        <span class="badge">27.5 min Commute</span>
-        <span class="badge">5th Largest City in MA</span>
-        <span class="badge">UMass Lowell: 4,932 degrees/yr</span>
-        <span class="badge">59K Employed</span>
-        <span class="badge">96% Health Coverage</span>
-        <span class="badge">Est. 1826</span>
+    <!-- Employment -->
+    <h2>💼 Employment & Economy</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Top Industries by Employment</h3>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <span class="bar-label">Healthcare</span>
+            <div class="bar-container"><div class="bar-fill" style="width: 100%; background: var(--green);">10,754</div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Manufacturing</span>
+            <div class="bar-container"><div class="bar-fill" style="width: 82%; background: #3B82F6;">8,827</div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Retail</span>
+            <div class="bar-container"><div class="bar-fill" style="width: 55%; background: #8B5CF6;">5,882</div></div>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Production</span>
+            <div class="bar-container"><div class="bar-fill" style="width: 54%; background: var(--amber);">5,844</div></div>
+          </div>
+        </div>
+        <div class="source">Total employed: 59,001 (−0.044% YoY)</div>
       </div>
-    </section>
+      
+      <div class="card">
+        <h3>Income & Property</h3>
+        <table>
+          <tr><td>Median HH Income</td><td><strong>$76,205</strong> (+4.38% YoY)</td></tr>
+          <tr><td>Median Home Value</td><td><strong>$395,100</strong> (+8.9% YoY)</td></tr>
+          <tr><td>Property Taxes</td><td><strong>$18,650</strong> median</td></tr>
+          <tr><td>Wage GINI (MA)</td><td><strong>0.478</strong> (above nat'l avg)</td></tr>
+        </table>
+        <div class="alert warning" style="margin-top: 16px; margin-bottom: 0;">
+          <p><strong>Greater Lowell WDA lost 4,000+ jobs in 2024.</strong> Unemployment trending up (+0.7%).</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Infrastructure Issues -->
+    <h2>🔧 Infrastructure Status</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Priority Projects</h3>
+        <table>
+          <tr><th>Project</th><th>Status</th></tr>
+          <tr><td>CSO Sewer Separation</td><td><span class="tag warning">In Progress</span></td></tr>
+          <tr><td>Complete Streets Plan</td><td><span class="tag ok">Updated 2024</span></td></tr>
+          <tr><td>Lowell High School</td><td><span class="tag critical">Overcrowded</span></td></tr>
+          <tr><td>FEMA Flood Maps</td><td><span class="tag ok">Updated 2021</span></td></tr>
+          <tr><td>LRTA Fare-Free Pilot</td><td><span class="tag ok">Dec 2024</span></td></tr>
+        </table>
+      </div>
+      
+      <div class="card">
+        <h3>Environmental Concerns</h3>
+        <div class="alert" style="margin-bottom: 12px;">
+          <h4>Silresim Superfund Site</h4>
+          <p>86 Tanner St — One of most contaminated in New England. EPA 5-year review Jan 2025.</p>
+        </div>
+        <div class="alert warning" style="margin-bottom: 0;">
+          <h4>Merrimack River Flood Risk</h4>
+          <p>River crested over flood stage May 2025. Properties in 100-year floodplain require NFIP insurance.</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Quick Reference -->
+    <h2>📋 Decision-Maker Quick Reference</h2>
+    <div class="card">
+      <table>
+        <tr><th>Metric</th><th>Value</th><th>Trend</th><th>Benchmark</th></tr>
+        <tr><td>Population</td><td>114,799</td><td>⚠️ Stagnant</td><td>Was 115,554 in 2020</td></tr>
+        <tr><td>Housing Units Needed</td><td>3,000 by 2030</td><td>🔴 Gap</td><td>HPP Target</td></tr>
+        <tr><td>Homeownership</td><td>44%</td><td>⬆️ 43.3% → 44%</td><td>65% national</td></tr>
+        <tr><td>Budget</td><td>$617.4M</td><td>⬆️ +5.9%</td><td>Growing pressure</td></tr>
+        <tr><td>School Utilization</td><td>85%</td><td>⬇️ Declining enrollment</td><td>Excess capacity 2,000</td></tr>
+        <tr><td>Employment</td><td>59,001</td><td>⬇️ −0.044%</td><td>4,000+ jobs lost in region</td></tr>
+        <tr><td>Poverty Rate</td><td>16%</td><td>—</td><td>12.4% national</td></tr>
+        <tr><td>Foreign-Born</td><td>29.6%</td><td>⬆️ from 28.8%</td><td>13.8% national</td></tr>
+      </table>
+    </div>
     
     <footer>
-      <p>Made with 🐈‍⬛ energy by Minnie</p>
-      <p style="margin-top: 8px; font-size: 0.8rem;">Sources: Data USA, EPA Superfund, DOJ, UMass Lowell Library, Atlas Obscura, NPS, LA Times</p>
+      <p>Data compiled Feb 2026 — Sources: City of Lowell, Data USA, Census Bureau, Housing.ma, Mass.gov, NMCOG, Lowell Sun</p>
+      <p style="margin-top: 8px;">Built by Minnie 🐈‍⬛</p>
     </footer>
   </div>
 </body>
