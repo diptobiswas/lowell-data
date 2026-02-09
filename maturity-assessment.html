@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Maturity Assessment | Lowell Data Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FFFBF5;
+            --amber: #F59E0B;
+            --amber-light: #FCD34D;
+            --coral: #FB7185;
+            --ink: #1C1917;
+            --ink-soft: #78716C;
+            --sage: #84cc16;
+            --glass: rgba(255, 251, 245, 0.8);
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--ink);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--ink-soft);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--amber);
+        }
+        
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--ink-soft);
+            margin-bottom: 1rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: var(--ink);
+            color: var(--cream);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .overall-score {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .score-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .score-number {
+            font-size: 5rem;
+            font-weight: 700;
+            color: var(--amber);
+            line-height: 1;
+        }
+        
+        .score-label {
+            font-size: 1.3rem;
+            color: var(--ink-soft);
+        }
+        
+        .score-bar {
+            flex: 1;
+            min-width: 280px;
+            max-width: 450px;
+        }
+        
+        .level-bar {
+            display: flex;
+            height: 45px;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .level-segment {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .level-1 { background: #ef4444; }
+        .level-2 { background: #f97316; }
+        .level-3 { background: #eab308; }
+        .level-4 { background: #84cc16; }
+        .level-5 { background: #22c55e; }
+        
+        .score-marker-container {
+            position: relative;
+            margin-bottom: 10px;
+        }
+        
+        .score-marker {
+            position: absolute;
+            bottom: -8px;
+            left: 32%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 12px solid var(--ink);
+        }
+        
+        .level-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--ink-soft);
+            margin-top: 0.5rem;
+            padding: 0 0.5rem;
+        }
+        
+        .maturity-level {
+            background: #FEF3C7;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--amber);
+            text-align: left;
+        }
+        
+        .maturity-level strong {
+            color: var(--amber);
+        }
+        
+        h2 {
+            font-size: 1.6rem;
+            margin: 2rem 0 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .dimension-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .dimension-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .dimension-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .dimension-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .dimension-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .dimension-score {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        
+        .dimension-score.high { background: #dcfce7; color: #166534; }
+        .dimension-score.medium { background: #fef9c3; color: #854d0e; }
+        .dimension-score.low { background: #fed7aa; color: #9a3412; }
+        .dimension-score.critical { background: #fecaca; color: #991b1b; }
+        
+        .findings {
+            font-size: 0.95rem;
+        }
+        
+        .findings ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .findings li {
+            padding: 0.4rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .findings li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--ink-soft);
+        }
+        
+        .findings li.strength::before {
+            content: "✓";
+            color: #22c55e;
+        }
+        
+        .findings li.weakness::before {
+            content: "⚠";
+            color: #ef4444;
+        }
+        
+        .findings .source {
+            font-size: 0.8rem;
+            color: var(--ink-soft);
+            margin-left: 0.25rem;
+        }
+        
+        .findings .source a {
+            color: var(--amber);
+            text-decoration: none;
+        }
+        
+        .findings .source a:hover {
+            text-decoration: underline;
+        }
+        
+        .summary-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        
+        .key-finding {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: #fafafa;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--amber);
+        }
+        
+        .key-finding.alert {
+            background: #fef2f2;
+            border-left-color: #ef4444;
+        }
+        
+        .key-finding.positive {
+            background: #f0fdf4;
+            border-left-color: #22c55e;
+        }
+        
+        .finding-icon {
+            font-size: 1.3rem;
+        }
+        
+        .recommendations {
+            background: var(--ink);
+            color: var(--cream);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .recommendations h2 {
+            color: var(--amber);
+            margin-top: 0;
+        }
+        
+        .recommendations ol {
+            padding-left: 1.5rem;
+        }
+        
+        .recommendations li {
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+        }
+        
+        .recommendations strong {
+            color: var(--amber);
+        }
+        
+        .references {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        
+        .references h2 {
+            margin-top: 0;
+        }
+        
+        .ref-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .ref-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.95rem;
+        }
+        
+        .ref-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .ref-list a {
+            color: var(--amber);
+            text-decoration: none;
+        }
+        
+        .ref-list a:hover {
+            text-decoration: underline;
+        }
+        
+        .ref-list .ref-num {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: var(--ink);
+            color: var(--cream);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.75rem;
+        }
+        
+        .ref-list .ref-date {
+            color: var(--ink-soft);
+            font-size: 0.85rem;
+        }
+        
+        .methodology {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+            border: 1px solid #e5e7eb;
+        }
+        
+        .methodology h3 {
+            color: var(--ink);
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--ink-soft);
+            font-size: 0.9rem;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .score-number { font-size: 3.5rem; }
+            .container { padding: 1rem; }
+            nav { padding: 1rem; }
+            .nav-links { gap: 0.75rem; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="nav-brand">📊 Lowell Data Suite</a>
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="correlations.html">Correlations</a>
+            <a href="simulator.html">Simulator</a>
+            <a href="maturity-assessment.html" class="active">Maturity</a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <header>
+            <h1>🏛️ Digital Capability Maturity</h1>
+            <p class="subtitle">City of Lowell, Massachusetts — Public Sector Assessment</p>
+            <span class="badge">Assessment Date: February 9, 2026</span>
+        </header>
+        
+        <div class="overall-score">
+            <div class="score-display">
+                <div>
+                    <div class="score-number">2.6</div>
+                    <div class="score-label">out of 5.0</div>
+                </div>
+                <div class="score-bar">
+                    <div class="score-marker-container">
+                        <div class="score-marker"></div>
+                    </div>
+                    <div class="level-bar">
+                        <div class="level-segment level-1">1</div>
+                        <div class="level-segment level-2">2</div>
+                        <div class="level-segment level-3">3</div>
+                        <div class="level-segment level-4">4</div>
+                        <div class="level-segment level-5">5</div>
+                    </div>
+                    <div class="level-labels">
+                        <span>Ad-hoc</span>
+                        <span>Emerging</span>
+                        <span>Defined</span>
+                        <span>Managed</span>
+                        <span>Optimizing</span>
+                    </div>
+                </div>
+            </div>
+            <div class="maturity-level">
+                <strong>Level 2-3: Emerging → Defined</strong> — Digital streamlines select services with lighthouse projects. Core standards emerging but not yet embedded across operations.
+            </div>
+        </div>
+        
+        <h2>📊 Dimension Scores</h2>
+        <div class="dimension-grid">
+            <div class="dimension-card">
+                <div class="dimension-header">
+                    <span class="dimension-name">📋 Strategy</span>
+                    <span class="dimension-score medium">3.0</span>
+                </div>
+                <div class="findings">
+                    <ul>
+                        <li class="strength">Master Plan 2024 completed with policy alignment <span class="source">[<a href="#ref-1">1</a>]</span></li>
+                        <li class="strength">First US "Frontrunner City" under Urban Economy Forum <span class="source">[<a href="#ref-2">2</a>]</span></li>
+                        <li class="strength">UMass Lowell partnership for UNIVER-city Labs <span class="source">[<a href="#ref-2">2</a>]</span></li>
+                        <li>Budget aligned to strategic priorities via ClearGov <span class="source">[<a href="#ref-3">3</a>]</span></li>
+                        <li class="weakness">Limited digital-specific roadmap visibility</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="dimension-card">
+                <div class="dimension-header">
+                    <span class="dimension-name">⚙️ Operating Model</span>
+                    <span class="dimension-score medium">2.5</span>
+                </div>
+                <div class="findings">
+                    <ul>
+                        <li class="strength">LowellSTAT performance management since 2010 <span class="source">[<a href="#ref-4">4</a>]</span></li>
+                        <li>Central MIS department as IT provider <span class="source">[<a href="#ref-5">5</a>]</span></li>
+                        <li>311 system with service ownership emerging <span class="source">[<a href="#ref-6">6</a>]</span></li>
+                        <li class="weakness">Traditional siloed department structure</li>
+                        <li class="weakness">No evidence of cross-functional product teams</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="dimension-card">
+                <div class="dimension-header">
+                    <span class="dimension-name">📈 Data & AI</span>
+                    <span class="dimension-score low">2.2</span>
+                </div>
+                <div class="findings">
+                    <ul>
+                        <li class="strength">GIS capability with ESRI/ArcGIS <span class="source">[<a href="#ref-7">7</a>]</span></li>
+                        <li class="strength">311 KPI dashboards and quarterly reporting <span class="source">[<a href="#ref-8">8</a>]</span></li>
+                        <li>LowellSTAT analysts for operational data <span class="source">[<a href="#ref-4">4</a>]</span></li>
+                        <li class="weakness">No visible AI/ML initiatives</li>
+                        <li class="weakness">Basic BI only — no predictive analytics</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="dimension-card">
+                <div class="dimension-header">
+                    <span class="dimension-name">🔧 Platforms & Ecosystem</span>
+                    <span class="dimension-score medium">2.8</span>
+                </div>
+                <div class="findings">
+                    <ul>
+                        <li class="strength">Tyler ESR for 311 (multi-channel intake) <span class="source">[<a href="#ref-6">6</a>]</span></li>
+                        <li class="strength">Mobile app for citizen services <span class="source">[<a href="#ref-9">9</a>]</span></li>
+                        <li>ClearGov for budget transparency <span class="source">[<a href="#ref-3">3</a>]</span></li>
+                        <li>ArcGIS Hub for GIS data <span class="source">[<a href="#ref-10">10</a>]</span></li>
+                        <li class="weakness">No public API strategy or platform thinking</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="dimension-card">
+                <div class="dimension-header">
+                    <span class="dimension-name">🛡️ Governance & Risk</span>
+                    <span class="dimension-score critical">1.8</span>
+                </div>
+                <div class="findings">
+                    <ul>
+                        <li class="weakness">Major ransomware breach, April 2023 <span class="source">[<a href="#ref-11">11</a>]</span></li>
+                        <li class="weakness">5GB data leaked to dark web (Play group) <span class="source">[<a href="#ref-12">12</a>]</span></li>
+                        <li class="weakness">Personal/medical records compromised <span class="source">[<a href="#ref-13">13</a>]</span></li>
+                        <li>ADA compliance ongoing (physical focus) <span class="source">[<a href="#ref-14">14</a>]</span></li>
+                        <li>UMass Lowell Security Operations Center (new) <span class="source">[<a href="#ref-15">15</a>]</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="dimension-card">
+                <div class="dimension-header">
+                    <span class="dimension-name">👥 People & Culture</span>
+                    <span class="dimension-score medium">2.7</span>
+                </div>
+                <div class="findings">
+                    <ul>
+                        <li class="strength">Community engagement on budget <span class="source">[<a href="#ref-3">3</a>]</span></li>
+                        <li class="strength">Language access at City Hall <span class="source">[<a href="#ref-16">16</a>]</span></li>
+                        <li>Commission on Disability active <span class="source">[<a href="#ref-14">14</a>]</span></li>
+                        <li>Workforce development grants available <span class="source">[<a href="#ref-17">17</a>]</span></li>
+                        <li class="weakness">Limited evidence of digital skills training</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="dimension-card">
+                <div class="dimension-header">
+                    <span class="dimension-name">📏 Metrics</span>
+                    <span class="dimension-score medium">3.0</span>
+                </div>
+                <div class="findings">
+                    <ul>
+                        <li class="strength">311 KPIs: days-to-close, volume, geo-density <span class="source">[<a href="#ref-8">8</a>]</span></li>
+                        <li class="strength">Quarterly reports by dept & district <span class="source">[<a href="#ref-8">8</a>]</span></li>
+                        <li class="strength">LowellSTAT cost savings: $1.4M+ <span class="source">[<a href="#ref-4">4</a>]</span></li>
+                        <li>Department performance accountability</li>
+                        <li class="weakness">Limited citizen outcome metrics</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="dimension-card">
+                <div class="dimension-header">
+                    <span class="dimension-name">🔮 Futures & Foresight</span>
+                    <span class="dimension-score medium">2.8</span>
+                </div>
+                <div class="findings">
+                    <ul>
+                        <li class="strength">Frontrunner City initiative (global partnership) <span class="source">[<a href="#ref-2">2</a>]</span></li>
+                        <li class="strength">UNIVER-city Labs planned with UMass <span class="source">[<a href="#ref-2">2</a>]</span></li>
+                        <li>Housing Innovation TechHub participation <span class="source">[<a href="#ref-18">18</a>]</span></li>
+                        <li>Master Plan includes future visioning <span class="source">[<a href="#ref-1">1</a>]</span></li>
+                        <li class="weakness">No formal scenario planning visible</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="dimension-card">
+                <div class="dimension-header">
+                    <span class="dimension-name">🎯 Tech Radar</span>
+                    <span class="dimension-score low">2.0</span>
+                </div>
+                <div class="findings">
+                    <ul>
+                        <li>Established vendor relationships</li>
+                        <li>Tyler, ESRI, ClearGov ecosystem</li>
+                        <li class="weakness">No public tech radar or framework</li>
+                        <li class="weakness">No structured evaluation process visible</li>
+                        <li class="weakness">Procurement-driven vs. strategic adoption</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="summary-section">
+            <h2>🔍 Key Findings</h2>
+            
+            <div class="key-finding alert">
+                <span class="finding-icon">🚨</span>
+                <div>
+                    <strong>Critical Security Gap:</strong> The April 2023 ransomware attack (Play group) resulted in 5GB of data leaked to the dark web, including personal records and medical billing <span class="source">[<a href="#ref-11">11</a>, <a href="#ref-12">12</a>, <a href="#ref-13">13</a>]</span>. This significantly impacts the governance score and indicates reactive rather than proactive security posture.
+                </div>
+            </div>
+            
+            <div class="key-finding positive">
+                <span class="finding-icon">🌟</span>
+                <div>
+                    <strong>Strategic Recognition:</strong> Lowell's designation as the first US "Frontrunner City" by the Urban Economy Forum positions them for global partnerships and innovation investment <span class="source">[<a href="#ref-2">2</a>]</span>. The UMass Lowell collaboration adds academic research capacity.
+                </div>
+            </div>
+            
+            <div class="key-finding">
+                <span class="finding-icon">📊</span>
+                <div>
+                    <strong>Strong Performance Foundation:</strong> LowellSTAT (since 2010) and the 311 KPI system demonstrate commitment to data-driven operations <span class="source">[<a href="#ref-4">4</a>, <a href="#ref-8">8</a>]</span>. However, capabilities remain at the BI/reporting level without advancing to predictive analytics or AI.
+                </div>
+            </div>
+            
+            <div class="key-finding">
+                <span class="finding-icon">🔧</span>
+                <div>
+                    <strong>Platform Potential:</strong> Good foundation with Tyler ESR, ArcGIS, and mobile apps, but no platform strategy or API ecosystem. Operating as tool consumers rather than platform providers.
+                </div>
+            </div>
+        </div>
+        
+        <div class="recommendations">
+            <h2>💡 Recommendations to Reach Level 3 (Defined)</h2>
+            <ol>
+                <li><strong>Security Remediation:</strong> Leverage the new UMass Lowell Security Operations Center partnership. Implement compliance-by-design, conduct regular penetration testing, and establish incident response playbooks.</li>
+                <li><strong>Formalize Tech Radar:</strong> Create a public technology standards document with Adopt/Trial/Hold/Retire classifications. Tie procurement decisions to this framework.</li>
+                <li><strong>Advance Data Capabilities:</strong> Move beyond BI dashboards to predictive analytics. Start with 311 data — predict service demand, optimize resource allocation, identify patterns before they become problems.</li>
+                <li><strong>Platform Thinking:</strong> Document APIs for existing systems. Enable third-party integration. Treat core systems (311, GIS, payments) as internal platforms with adoption targets.</li>
+                <li><strong>Digital Accessibility Audit:</strong> Conduct WCAG 2.1 AA compliance audit of all digital services. Build accessibility into development standards, not as afterthought.</li>
+                <li><strong>Service Ownership Model:</strong> Pilot cross-functional product teams for 2-3 key citizen services. Assign outcome accountability, not just delivery responsibility.</li>
+            </ol>
+        </div>
+        
+        <div class="references">
+            <h2>📚 References</h2>
+            <ol class="ref-list">
+                <li id="ref-1">
+                    <span class="ref-num">1</span>
+                    <strong>City of Lowell Master Plan 2024</strong><br>
+                    <a href="https://lowellma.gov/1969/Learn-About-Past-Plans" target="_blank">lowellma.gov/1969/Learn-About-Past-Plans</a>
+                    <span class="ref-date">• Accessed Feb 2026</span>
+                </li>
+                <li id="ref-2">
+                    <span class="ref-num">2</span>
+                    <strong>City of Lowell Recognized as the First U.S "Frontrunner City" in Urban Transformation</strong><br>
+                    <a href="https://www.lowellma.gov/m/newsflash/home/detail/942" target="_blank">lowellma.gov/m/newsflash/home/detail/942</a>
+                    <span class="ref-date">• July 2025</span>
+                </li>
+                <li id="ref-3">
+                    <span class="ref-num">3</span>
+                    <strong>City of Lowell Budget Department</strong><br>
+                    <a href="https://www.lowellma.gov/151/Budget" target="_blank">lowellma.gov/151/Budget</a>
+                    <span class="ref-date">• FY2026</span>
+                </li>
+                <li id="ref-4">
+                    <span class="ref-num">4</span>
+                    <strong>LowellSTAT Performance Management Initiative</strong><br>
+                    <a href="https://www.lowellma.gov/451/LowellSTAT" target="_blank">lowellma.gov/451/LowellSTAT</a>
+                    <span class="ref-date">• Since 2010</span>
+                </li>
+                <li id="ref-5">
+                    <span class="ref-num">5</span>
+                    <strong>Management Information Systems (MIS) Department Overview</strong><br>
+                    <a href="https://www.lowellma.gov/270/Overview" target="_blank">lowellma.gov/270/Overview</a>
+                    <span class="ref-date">• Accessed Feb 2026</span>
+                </li>
+                <li id="ref-6">
+                    <span class="ref-num">6</span>
+                    <strong>Lowell 311 Non-Emergency Service Request System</strong><br>
+                    <a href="https://lowellma.gov/1977/Lowell-311" target="_blank">lowellma.gov/1977/Lowell-311</a>
+                    <span class="ref-date">• Accessed Feb 2026</span>
+                </li>
+                <li id="ref-7">
+                    <span class="ref-num">7</span>
+                    <strong>Geographic Information Systems (GIS) & Maps</strong><br>
+                    <a href="https://www.lowellma.gov/260/Geographic-Information-Systems-GIS-Maps" target="_blank">lowellma.gov/260/Geographic-Information-Systems-GIS-Maps</a>
+                    <span class="ref-date">• Accessed Feb 2026</span>
+                </li>
+                <li id="ref-8">
+                    <span class="ref-num">8</span>
+                    <strong>311 Reports - City of Lowell</strong><br>
+                    <a href="https://www.lowellma.gov/2105/311-Reports" target="_blank">lowellma.gov/2105/311-Reports</a>
+                    <span class="ref-date">• Quarterly Reports</span>
+                </li>
+                <li id="ref-9">
+                    <span class="ref-num">9</span>
+                    <strong>City of Lowell (MA) Mobile App</strong><br>
+                    <a href="https://apps.apple.com/us/app/city-of-lowell-ma/id1591467196" target="_blank">App Store</a>
+                    <span class="ref-date">• Accessed Feb 2026</span>
+                </li>
+                <li id="ref-10">
+                    <span class="ref-num">10</span>
+                    <strong>City of Lowell GIS Hub Page</strong><br>
+                    <a href="https://lowell-gis-web-applications-lowell.hub.arcgis.com/" target="_blank">lowell-gis-web-applications-lowell.hub.arcgis.com</a>
+                    <span class="ref-date">• Accessed Feb 2026</span>
+                </li>
+                <li id="ref-11">
+                    <span class="ref-num">11</span>
+                    <strong>Cyberattack disrupts Lowell city government, shuts down computers</strong><br>
+                    <a href="https://www.cbsnews.com/boston/news/cyberattack-lowell-city-government/" target="_blank">CBS Boston</a>
+                    <span class="ref-date">• April 25, 2023</span>
+                </li>
+                <li id="ref-12">
+                    <span class="ref-num">12</span>
+                    <strong>Lowell MA Cyber Attack: What Data Was Released?</strong><br>
+                    <a href="https://www.nbcboston.com/news/local/lowell-hit-with-cyber-attack-some-data-released-to-dark-web-report/3045330/" target="_blank">NBC Boston</a>
+                    <span class="ref-date">• May 16, 2023</span>
+                </li>
+                <li id="ref-13">
+                    <span class="ref-num">13</span>
+                    <strong>Hacked data appears to show scope of Lowell's network attack</strong><br>
+                    <a href="https://www.lowellsun.com/2023/05/18/hacked-data-appears-to-show-scope-of-lowells-network-attack/" target="_blank">Lowell Sun</a>
+                    <span class="ref-date">• May 18, 2023</span>
+                </li>
+                <li id="ref-14">
+                    <span class="ref-num">14</span>
+                    <strong>Commission on Disability - City of Lowell</strong><br>
+                    <a href="https://www.lowellma.gov/644/Commission-on-Disability" target="_blank">lowellma.gov/644/Commission-on-Disability</a>
+                    <span class="ref-date">• Accessed Feb 2026</span>
+                </li>
+                <li id="ref-15">
+                    <span class="ref-num">15</span>
+                    <strong>UMass Lowell to Open Security Operations Center</strong><br>
+                    <a href="https://www.uml.edu/news/press-releases/2025/socrelease100725.aspx" target="_blank">UMass Lowell</a>
+                    <span class="ref-date">• October 2025</span>
+                </li>
+                <li id="ref-16">
+                    <span class="ref-num">16</span>
+                    <strong>City of Lowell Official Website</strong><br>
+                    <a href="https://www.lowellma.gov/" target="_blank">lowellma.gov</a>
+                    <span class="ref-date">• Language Access Hours</span>
+                </li>
+                <li id="ref-17">
+                    <span class="ref-num">17</span>
+                    <strong>Workforce Development - City of Lowell</strong><br>
+                    <a href="https://www.lowellma.gov/796/Workforce-Development" target="_blank">lowellma.gov/796/Workforce-Development</a>
+                    <span class="ref-date">• Accessed Feb 2026</span>
+                </li>
+                <li id="ref-18">
+                    <span class="ref-num">18</span>
+                    <strong>UMass Lowell Seeks Solutions to Housing Crisis Through Massachusetts TechHubs Program</strong><br>
+                    <a href="https://www.uml.edu/news/press-releases/2025/housing-innovation-techhub.aspx" target="_blank">UMass Lowell</a>
+                    <span class="ref-date">• 2025</span>
+                </li>
+            </ol>
+        </div>
+        
+        <div class="methodology">
+            <h3>📋 Methodology</h3>
+            <p>This assessment uses the <strong>Public Sector Organizational Digital Capability Maturity Model</strong> covering nine dimensions: Strategy, Operating Model, Data/AI, Platforms & Ecosystem, Governance & Risk, People & Culture, Metrics, Futures/Foresight, and Tech Radar. Each dimension scored 1-5 based on publicly available evidence.</p>
+            <p style="margin-top: 0.75rem;">Research conducted February 2026 using official City of Lowell resources, GovTech publications, Massachusetts state sources, UMass Lowell announcements, and news archives.</p>
+        </div>
+        
+        <footer>
+            <p>Lowell Data Suite — Built for UN-Habitat QoLI Research</p>
+        </footer>
+    </div>
+</body>
+</html>
