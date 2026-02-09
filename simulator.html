@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lowell City Manager — Policy Simulator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FFF4D6;
+      --cream-2: #FFFBEB;
+      --paper: #FFF8E8;
+      --amber: #F59E0B;
+      --coral: #FB7185;
+      --ink: #2A201C;
+      --muted: #6B5D55;
+      --charcoal: #1C1917;
+      --green: #22C55E;
+      --red: #EF4444;
+      --blue: #3B82F6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Alegreya Sans', sans-serif;
+      background: linear-gradient(135deg, var(--cream), var(--cream-2));
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+    h1, h2, h3 { font-family: 'Fraunces', serif; font-weight: 700; }
+    h1 { font-size: 2rem; margin-bottom: 4px; }
+    h2 { font-size: 1.3rem; margin-bottom: 12px; color: var(--charcoal); }
+    .subtitle { color: var(--muted); font-size: 1rem; margin-bottom: 24px; }
+    
+    .layout { display: grid; grid-template-columns: 380px 1fr; gap: 24px; }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+    
+    /* Control Panel */
+    .controls {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 24px;
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+    }
+    .controls h2 { border-bottom: 2px solid var(--amber); padding-bottom: 8px; margin-bottom: 20px; }
+    
+    .control-group { margin-bottom: 24px; }
+    .control-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; }
+    .control-group .hint { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+    
+    input[type="range"] { width: 100%; height: 8px; -webkit-appearance: none; background: #e5e5e5; border-radius: 4px; outline: none; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: var(--amber); border-radius: 50%; cursor: pointer; }
+    
+    .value-display { display: flex; justify-content: space-between; font-size: 0.85rem; margin-top: 4px; }
+    .value-display .current { font-weight: 700; color: var(--blue); font-size: 1.1rem; }
+    
+    .toggle-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .toggle-btn {
+      padding: 8px 16px;
+      border: 2px solid #e5e5e5;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .toggle-btn:hover { border-color: var(--amber); }
+    .toggle-btn.active { background: var(--amber); color: white; border-color: var(--amber); }
+    
+    .action-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--green), #16A34A);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: transform 0.2s;
+    }
+    .action-btn:hover { transform: scale(1.02); }
+    .action-btn.reset { background: linear-gradient(135deg, var(--muted), #4B5563); }
+    
+    /* Results Panel */
+    .results { display: flex; flex-direction: column; gap: 20px; }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    .card h3 { font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    
+    .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+    .metric-row:last-child { border-bottom: none; }
+    .metric-label { font-size: 0.9rem; }
+    .metric-values { display: flex; align-items: center; gap: 12px; }
+    .metric-current { font-size: 0.85rem; color: var(--muted); }
+    .metric-projected { font-size: 1.1rem; font-weight: 700; }
+    .metric-projected.positive { color: var(--green); }
+    .metric-projected.negative { color: var(--red); }
+    .metric-projected.neutral { color: var(--amber); }
+    .metric-change { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; }
+    .metric-change.up { background: #D1FAE5; color: #047857; }
+    .metric-change.down { background: #FEE2E2; color: #B91C1C; }
+    
+    /* Impact Visualization */
+    .impact-bar { margin: 8px 0; }
+    .impact-bar-bg { height: 12px; background: #f0f0f0; border-radius: 6px; overflow: hidden; position: relative; }
+    .impact-bar-fill { height: 100%; border-radius: 6px; transition: width 0.5s ease; }
+    .impact-bar-marker { position: absolute; top: -4px; width: 3px; height: 20px; background: var(--charcoal); border-radius: 2px; }
+    
+    /* Timeline */
+    .timeline { display: flex; justify-content: space-between; margin-top: 16px; padding-top: 16px; border-top: 1px solid #f0f0f0; }
+    .timeline-point { text-align: center; flex: 1; }
+    .timeline-year { font-size: 0.8rem; color: var(--muted); }
+    .timeline-value { font-size: 1rem; font-weight: 700; margin-top: 4px; }
+    
+    /* Budget Breakdown */
+    .budget-item { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+    .budget-color { width: 12px; height: 12px; border-radius: 3px; }
+    .budget-label { flex: 1; font-size: 0.9rem; }
+    .budget-amount { font-weight: 600; }
+    .budget-bar { flex: 2; height: 8px; background: #f0f0f0; border-radius: 4px; overflow: hidden; }
+    .budget-bar-fill { height: 100%; border-radius: 4px; }
+    
+    /* Recommendations */
+    .recommendation {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .recommendation.urgent { background: #FEF2F2; border-left: 4px solid var(--red); }
+    .recommendation.warning { background: #FFFBEB; border-left: 4px solid var(--amber); }
+    .recommendation.opportunity { background: #EFF6FF; border-left: 4px solid var(--blue); }
+    .recommendation .icon { font-size: 1.2rem; }
+    .recommendation .text { flex: 1; }
+    .recommendation .title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+    .recommendation .desc { font-size: 0.85rem; color: var(--muted); }
+    
+    /* Score Card */
+    .score-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, #1E293B, #334155);
+      border-radius: 16px;
+      color: white;
+    }
+    .score-value { font-size: 3rem; font-weight: 700; }
+    .score-label { font-size: 0.9rem; opacity: 0.8; }
+    .score-delta { font-size: 1.1rem; padding: 4px 12px; border-radius: 20px; margin-top: 8px; }
+    .score-delta.positive { background: rgba(34, 197, 94, 0.3); }
+    .score-delta.negative { background: rgba(239, 68, 68, 0.3); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🏛️ Lowell Policy Simulator</h1>
+    <p class="subtitle">Model policy decisions and see projected 5-year transformation outcomes</p>
+    
+    <div class="layout">
+      <!-- Control Panel -->
+      <div class="controls">
+        <h2>📊 Policy Controls</h2>
+        
+        <div class="control-group">
+          <label>🏠 Affordable Housing Investment</label>
+          <div class="hint">Units to build by 2030 (current gap: 1,600 at &lt;50% AMI)</div>
+          <input type="range" id="housing" min="0" max="3000" value="500" step="100">
+          <div class="value-display">
+            <span>0 units</span>
+            <span class="current" id="housing-value">500 units</span>
+            <span>3,000 units</span>
+          </div>
+        </div>
+        
+        <div class="control-group">
+          <label>🚰 Infrastructure Spending</label>
+          <div class="hint">Annual investment for CSO separation & upgrades</div>
+          <input type="range" id="infrastructure" min="0" max="50" value="10" step="2">
+          <div class="value-display">
+            <span>$0M</span>
+            <span class="current" id="infrastructure-value">$10M/yr</span>
+            <span>$50M/yr</span>
+          </div>
+        </div>
+        
+        <div class="control-group">
+          <label>🎓 School Consolidation</label>
+          <div class="hint">Close underutilized schools (2,000 excess seats)</div>
+          <div class="toggle-group" id="school-toggle">
+            <button class="toggle-btn active" data-value="0">Keep All</button>
+            <button class="toggle-btn" data-value="2">Close 2</button>
+            <button class="toggle-btn" data-value="4">Close 4</button>
+          </div>
+        </div>
+        
+        <div class="control-group">
+          <label>💼 Economic Development</label>
+          <div class="hint">Job creation incentive programs</div>
+          <input type="range" id="economic" min="0" max="30" value="5" step="1">
+          <div class="value-display">
+            <span>$0M</span>
+            <span class="current" id="economic-value">$5M/yr</span>
+            <span>$30M/yr</span>
+          </div>
+        </div>
+        
+        <div class="control-group">
+          <label>🌊 Flood Mitigation</label>
+          <div class="hint">Merrimack River flood control investment</div>
+          <div class="toggle-group" id="flood-toggle">
+            <button class="toggle-btn active" data-value="0">Minimal</button>
+            <button class="toggle-btn" data-value="1">Moderate ($15M)</button>
+            <button class="toggle-btn" data-value="2">Major ($40M)</button>
+          </div>
+        </div>
+        
+        <button class="action-btn" onclick="applyScenario()">📈 Calculate 5-Year Impact</button>
+        <button class="action-btn reset" onclick="resetControls()">↺ Reset to Baseline</button>
+      </div>
+      
+      <!-- Results Panel -->
+      <div class="results">
+        <!-- Overall Score -->
+        <div class="card">
+          <div class="score-card">
+            <div>
+              <div class="score-value" id="overall-score">62</div>
+              <div class="score-label">City Health Index</div>
+              <div class="score-delta positive" id="score-delta">+0 from baseline</div>
+            </div>
+            <div style="text-align: left; padding-left: 24px; border-left: 1px solid rgba(255,255,255,0.2);">
+              <div style="font-size: 0.85rem; opacity: 0.7;">5-Year Projection</div>
+              <div style="font-size: 1.5rem; font-weight: 700;" id="projected-score">62</div>
+              <div style="font-size: 0.8rem; opacity: 0.7;">by 2030</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Key Metrics -->
+        <div class="card">
+          <h3>📊 Projected Outcomes (2030)</h3>
+          
+          <div class="metric-row">
+            <span class="metric-label">Housing Gap (&lt;50% AMI)</span>
+            <div class="metric-values">
+              <span class="metric-current">Current: 1,600</span>
+              <span class="metric-projected negative" id="housing-gap">1,100</span>
+              <span class="metric-change down" id="housing-change">-500</span>
+            </div>
+          </div>
+          
+          <div class="metric-row">
+            <span class="metric-label">Population Growth</span>
+            <div class="metric-values">
+              <span class="metric-current">Current: 0.05%</span>
+              <span class="metric-projected neutral" id="pop-growth">0.3%</span>
+              <span class="metric-change up" id="pop-change">+0.25%</span>
+            </div>
+          </div>
+          
+          <div class="metric-row">
+            <span class="metric-label">Job Growth (5yr)</span>
+            <div class="metric-values">
+              <span class="metric-current">Lost: -4,000</span>
+              <span class="metric-projected positive" id="job-growth">+1,200</span>
+              <span class="metric-change up" id="job-change">+5,200</span>
+            </div>
+          </div>
+          
+          <div class="metric-row">
+            <span class="metric-label">Infrastructure Score</span>
+            <div class="metric-values">
+              <span class="metric-current">Current: C+</span>
+              <span class="metric-projected neutral" id="infra-score">B-</span>
+              <span class="metric-change up" id="infra-change">+1 grade</span>
+            </div>
+          </div>
+          
+          <div class="metric-row">
+            <span class="metric-label">Flood Risk Rating</span>
+            <div class="metric-values">
+              <span class="metric-current">Current: High</span>
+              <span class="metric-projected neutral" id="flood-risk">Moderate</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Budget Impact -->
+        <div class="card">
+          <h3>💰 5-Year Budget Impact</h3>
+          
+          <div class="budget-item">
+            <div class="budget-color" style="background: var(--coral);"></div>
+            <span class="budget-label">Housing Development</span>
+            <span class="budget-amount" id="budget-housing">$45M</span>
+            <div class="budget-bar"><div class="budget-bar-fill" id="budget-housing-bar" style="width: 30%; background: var(--coral);"></div></div>
+          </div>
+          
+          <div class="budget-item">
+            <div class="budget-color" style="background: var(--blue);"></div>
+            <span class="budget-label">Infrastructure</span>
+            <span class="budget-amount" id="budget-infra">$50M</span>
+            <div class="budget-bar"><div class="budget-bar-fill" id="budget-infra-bar" style="width: 33%; background: var(--blue);"></div></div>
+          </div>
+          
+          <div class="budget-item">
+            <div class="budget-color" style="background: var(--green);"></div>
+            <span class="budget-label">Economic Development</span>
+            <span class="budget-amount" id="budget-econ">$25M</span>
+            <div class="budget-bar"><div class="budget-bar-fill" id="budget-econ-bar" style="width: 17%; background: var(--green);"></div></div>
+          </div>
+          
+          <div class="budget-item">
+            <div class="budget-color" style="background: var(--amber);"></div>
+            <span class="budget-label">Flood Mitigation</span>
+            <span class="budget-amount" id="budget-flood">$0M</span>
+            <div class="budget-bar"><div class="budget-bar-fill" id="budget-flood-bar" style="width: 0%; background: var(--amber);"></div></div>
+          </div>
+          
+          <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid #e5e5e5; display: flex; justify-content: space-between; font-weight: 700;">
+            <span>Total 5-Year Investment</span>
+            <span id="budget-total" style="font-size: 1.2rem; color: var(--charcoal);">$120M</span>
+          </div>
+          
+          <div style="margin-top: 8px; display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--muted);">
+            <span>Annual Budget Impact</span>
+            <span id="budget-annual">+3.9% of FY2026 ($617.4M)</span>
+          </div>
+          
+          <div class="timeline">
+            <div class="timeline-point">
+              <div class="timeline-year">2026</div>
+              <div class="timeline-value" id="timeline-2026">$24M</div>
+            </div>
+            <div class="timeline-point">
+              <div class="timeline-year">2027</div>
+              <div class="timeline-value" id="timeline-2027">$26M</div>
+            </div>
+            <div class="timeline-point">
+              <div class="timeline-year">2028</div>
+              <div class="timeline-value" id="timeline-2028">$25M</div>
+            </div>
+            <div class="timeline-point">
+              <div class="timeline-year">2029</div>
+              <div class="timeline-value" id="timeline-2029">$24M</div>
+            </div>
+            <div class="timeline-point">
+              <div class="timeline-year">2030</div>
+              <div class="timeline-value" id="timeline-2030">$21M</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- School Savings -->
+        <div class="card" id="school-savings-card" style="display: none;">
+          <h3>🎓 School Consolidation Savings</h3>
+          <div class="metric-row">
+            <span class="metric-label">Schools Closed</span>
+            <span class="metric-projected" id="schools-closed">2</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Annual Operational Savings</span>
+            <span class="metric-projected positive" id="school-annual-savings">$4.2M</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">5-Year Total Savings</span>
+            <span class="metric-projected positive" id="school-total-savings">$21M</span>
+          </div>
+          <div style="margin-top: 12px; padding: 12px; background: #FFFBEB; border-radius: 8px; font-size: 0.85rem;">
+            ⚠️ <strong>Note:</strong> Consolidation requires community engagement process. Savings offset by one-time transition costs (~$2M).
+          </div>
+        </div>
+        
+        <!-- Recommendations -->
+        <div class="card">
+          <h3>💡 AI Recommendations</h3>
+          <div id="recommendations">
+            <div class="recommendation urgent">
+              <span class="icon">🚨</span>
+              <div class="text">
+                <div class="title">Address Housing Crisis First</div>
+                <div class="desc">Current investment of 500 units leaves 1,100 households in crisis. Recommend minimum 1,200 units.</div>
+              </div>
+            </div>
+            <div class="recommendation warning">
+              <span class="icon">⚠️</span>
+              <div class="text">
+                <div class="title">Infrastructure Investment Low</div>
+                <div class="desc">$10M/yr won't complete CSO separation by federal deadline. Risk of EPA penalties.</div>
+              </div>
+            </div>
+            <div class="recommendation opportunity">
+              <span class="icon">💡</span>
+              <div class="text">
+                <div class="title">School Consolidation Opportunity</div>
+                <div class="desc">With 85% utilization, closing 2 schools could fund $21M in other priorities.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Transformation Preview -->
+        <div class="card">
+          <h3>🔮 Lowell 2030 Preview</h3>
+          <div id="transformation-preview" style="line-height: 1.8; font-size: 0.95rem;">
+            With current policy settings, Lowell in 2030 would see <strong>moderate improvement</strong> in livability. 
+            The housing gap would decrease but remain a crisis. Population would stabilize with <strong>slight growth</strong>. 
+            Infrastructure would improve but <strong>CSO compliance remains at risk</strong>. 
+            Economic outlook is <strong>cautiously optimistic</strong> with job growth returning.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // State
+    let state = {
+      housing: 500,
+      infrastructure: 10,
+      schoolsClosed: 0,
+      economic: 5,
+      floodLevel: 0
+    };
+    
+    // Baseline metrics
+    const baseline = {
+      housingGap: 1600,
+      popGrowth: 0.05,
+      jobsLost: -4000,
+      infraGrade: 2.3, // C+
+      floodRisk: 3, // High
+      healthIndex: 62
+    };
+    
+    // DOM elements
+    const housingSlider = document.getElementById('housing');
+    const infraSlider = document.getElementById('infrastructure');
+    const econSlider = document.getElementById('economic');
+    
+    // Event listeners
+    housingSlider.addEventListener('input', (e) => {
+      state.housing = parseInt(e.target.value);
+      document.getElementById('housing-value').textContent = `${state.housing} units`;
+      updateProjections();
+    });
+    
+    infraSlider.addEventListener('input', (e) => {
+      state.infrastructure = parseInt(e.target.value);
+      document.getElementById('infrastructure-value').textContent = `$${state.infrastructure}M/yr`;
+      updateProjections();
+    });
+    
+    econSlider.addEventListener('input', (e) => {
+      state.economic = parseInt(e.target.value);
+      document.getElementById('economic-value').textContent = `$${state.economic}M/yr`;
+      updateProjections();
+    });
+    
+    // Toggle buttons
+    document.querySelectorAll('.toggle-group').forEach(group => {
+      group.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          if (group.id === 'school-toggle') {
+            state.schoolsClosed = parseInt(btn.dataset.value);
+            document.getElementById('school-savings-card').style.display = state.schoolsClosed > 0 ? 'block' : 'none';
+          } else if (group.id === 'flood-toggle') {
+            state.floodLevel = parseInt(btn.dataset.value);
+          }
+          updateProjections();
+        });
+      });
+    });
+    
+    function updateProjections() {
+      // Calculate projections
+      const housingGapReduction = Math.min(state.housing * 0.6, baseline.housingGap);
+      const projectedHousingGap = Math.max(0, baseline.housingGap - housingGapReduction);
+      
+      const popGrowthBoost = (state.housing / 3000) * 0.5 + (state.economic / 30) * 0.3;
+      const projectedPopGrowth = baseline.popGrowth + popGrowthBoost;
+      
+      const jobGrowth = (state.economic / 30) * 6000 + (state.housing / 3000) * 2000 - 500;
+      const projectedJobs = Math.round(jobGrowth);
+      
+      const infraImprovement = state.infrastructure / 50 * 1.5;
+      const projectedInfraGrade = Math.min(4, baseline.infraGrade + infraImprovement);
+      const gradeLabels = ['D', 'D+', 'C', 'C+', 'B-', 'B', 'B+', 'A-', 'A'];
+      const infraLabel = gradeLabels[Math.round(projectedInfraGrade * 2)];
+      
+      const floodReduction = state.floodLevel;
+      const floodLabels = ['High', 'Moderate', 'Low'];
+      const projectedFloodRisk = Math.max(0, baseline.floodRisk - 1 - floodReduction);
+      
+      // Health index
+      const housingScore = (1 - projectedHousingGap / baseline.housingGap) * 25;
+      const popScore = (projectedPopGrowth / 1) * 20;
+      const jobScore = ((projectedJobs + 4000) / 10000) * 25;
+      const infraScore = (projectedInfraGrade / 4) * 15;
+      const floodScore = ((3 - projectedFloodRisk) / 3) * 15;
+      const healthIndex = Math.round(baseline.healthIndex * 0.3 + housingScore + popScore + jobScore + infraScore + floodScore);
+      
+      // Update DOM
+      document.getElementById('housing-gap').textContent = projectedHousingGap.toLocaleString();
+      document.getElementById('housing-gap').className = `metric-projected ${projectedHousingGap < 800 ? 'positive' : projectedHousingGap < 1200 ? 'neutral' : 'negative'}`;
+      document.getElementById('housing-change').textContent = `-${Math.round(housingGapReduction).toLocaleString()}`;
+      
+      document.getElementById('pop-growth').textContent = `${projectedPopGrowth.toFixed(2)}%`;
+      document.getElementById('pop-growth').className = `metric-projected ${projectedPopGrowth > 0.5 ? 'positive' : projectedPopGrowth > 0.2 ? 'neutral' : 'negative'}`;
+      document.getElementById('pop-change').textContent = `+${(projectedPopGrowth - baseline.popGrowth).toFixed(2)}%`;
+      
+      document.getElementById('job-growth').textContent = projectedJobs > 0 ? `+${projectedJobs.toLocaleString()}` : projectedJobs.toLocaleString();
+      document.getElementById('job-growth').className = `metric-projected ${projectedJobs > 2000 ? 'positive' : projectedJobs > 0 ? 'neutral' : 'negative'}`;
+      document.getElementById('job-change').textContent = `+${(projectedJobs + 4000).toLocaleString()}`;
+      
+      document.getElementById('infra-score').textContent = infraLabel;
+      document.getElementById('flood-risk').textContent = floodLabels[Math.min(2, Math.max(0, 2 - projectedFloodRisk))];
+      
+      // Scores
+      document.getElementById('projected-score').textContent = healthIndex;
+      document.getElementById('score-delta').textContent = `${healthIndex >= baseline.healthIndex ? '+' : ''}${healthIndex - baseline.healthIndex} from baseline`;
+      document.getElementById('score-delta').className = `score-delta ${healthIndex >= baseline.healthIndex ? 'positive' : 'negative'}`;
+      
+      // Budget
+      const housingBudget = Math.round(state.housing * 0.09); // ~$90k per unit subsidy
+      const infraBudget = state.infrastructure * 5;
+      const econBudget = state.economic * 5;
+      const floodBudget = [0, 15, 40][state.floodLevel];
+      const schoolSavings = state.schoolsClosed * 2.1 * 5;
+      const totalBudget = housingBudget + infraBudget + econBudget + floodBudget - schoolSavings;
+      
+      document.getElementById('budget-housing').textContent = `$${housingBudget}M`;
+      document.getElementById('budget-infra').textContent = `$${infraBudget}M`;
+      document.getElementById('budget-econ').textContent = `$${econBudget}M`;
+      document.getElementById('budget-flood').textContent = `$${floodBudget}M`;
+      document.getElementById('budget-total').textContent = `$${Math.round(totalBudget)}M`;
+      document.getElementById('budget-annual').textContent = `+${((totalBudget / 5) / 617.4 * 100).toFixed(1)}% of FY2026 ($617.4M)`;
+      
+      const maxBudget = 150;
+      document.getElementById('budget-housing-bar').style.width = `${(housingBudget / maxBudget) * 100}%`;
+      document.getElementById('budget-infra-bar').style.width = `${(infraBudget / maxBudget) * 100}%`;
+      document.getElementById('budget-econ-bar').style.width = `${(econBudget / maxBudget) * 100}%`;
+      document.getElementById('budget-flood-bar').style.width = `${(floodBudget / maxBudget) * 100}%`;
+      
+      // Timeline (rough annual distribution)
+      const annual = totalBudget / 5;
+      document.getElementById('timeline-2026').textContent = `$${Math.round(annual * 1.1)}M`;
+      document.getElementById('timeline-2027').textContent = `$${Math.round(annual * 1.15)}M`;
+      document.getElementById('timeline-2028').textContent = `$${Math.round(annual * 1.05)}M`;
+      document.getElementById('timeline-2029').textContent = `$${Math.round(annual * 0.95)}M`;
+      document.getElementById('timeline-2030').textContent = `$${Math.round(annual * 0.75)}M`;
+      
+      // School savings
+      if (state.schoolsClosed > 0) {
+        document.getElementById('schools-closed').textContent = state.schoolsClosed;
+        document.getElementById('school-annual-savings').textContent = `$${(state.schoolsClosed * 2.1).toFixed(1)}M`;
+        document.getElementById('school-total-savings').textContent = `$${Math.round(schoolSavings)}M`;
+      }
+      
+      // Recommendations
+      updateRecommendations(projectedHousingGap, state.infrastructure, state.schoolsClosed, state.floodLevel);
+      
+      // Transformation text
+      updateTransformationText(projectedHousingGap, projectedPopGrowth, projectedJobs, infraLabel, state.floodLevel);
+    }
+    
+    function updateRecommendations(housingGap, infra, schools, flood) {
+      let html = '';
+      
+      if (housingGap > 1000) {
+        html += `<div class="recommendation urgent">
+          <span class="icon">🚨</span>
+          <div class="text">
+            <div class="title">Housing Crisis Remains Critical</div>
+            <div class="desc">Gap of ${housingGap.toLocaleString()} units still leaves thousands in housing insecurity. Consider increasing to 1,500+ units.</div>
+          </div>
+        </div>`;
+      } else if (housingGap > 500) {
+        html += `<div class="recommendation warning">
+          <span class="icon">⚠️</span>
+          <div class="text">
+            <div class="title">Housing Gap Improving</div>
+            <div class="desc">Good progress, but ${housingGap.toLocaleString()} unit gap remains. Full resolution requires sustained investment.</div>
+          </div>
+        </div>`;
+      } else {
+        html += `<div class="recommendation opportunity">
+          <span class="icon">✅</span>
+          <div class="text">
+            <div class="title">Housing Crisis Near Resolution</div>
+            <div class="desc">Excellent! This investment would nearly eliminate the affordable housing gap by 2030.</div>
+          </div>
+        </div>`;
+      }
+      
+      if (infra < 20) {
+        html += `<div class="recommendation warning">
+          <span class="icon">⚠️</span>
+          <div class="text">
+            <div class="title">CSO Compliance Risk</div>
+            <div class="desc">Current infrastructure investment may not meet EPA combined sewer overflow deadlines. Risk of federal penalties.</div>
+          </div>
+        </div>`;
+      }
+      
+      if (schools === 0) {
+        html += `<div class="recommendation opportunity">
+          <span class="icon">💡</span>
+          <div class="text">
+            <div class="title">Untapped School Consolidation</div>
+            <div class="desc">With 2,000 excess seats, consolidating 2-4 schools could redirect $15-25M to other priorities.</div>
+          </div>
+        </div>`;
+      }
+      
+      if (flood === 0) {
+        html += `<div class="recommendation warning">
+          <span class="icon">🌊</span>
+          <div class="text">
+            <div class="title">Flood Risk Unaddressed</div>
+            <div class="desc">Merrimack River flood risk remains high. May 2025 flood stage event could repeat.</div>
+          </div>
+        </div>`;
+      }
+      
+      document.getElementById('recommendations').innerHTML = html;
+    }
+    
+    function updateTransformationText(housingGap, popGrowth, jobs, infraGrade, flood) {
+      const housingStatus = housingGap < 500 ? 'near elimination of' : housingGap < 1000 ? 'significant reduction in' : 'persistent';
+      const popStatus = popGrowth > 0.5 ? 'strong population growth' : popGrowth > 0.2 ? 'stable population' : 'continued stagnation';
+      const jobStatus = jobs > 3000 ? 'robust job creation' : jobs > 1000 ? 'moderate job growth' : 'sluggish employment recovery';
+      const infraStatus = infraGrade.includes('B') || infraGrade.includes('A') ? 'upgraded infrastructure meeting compliance' : 'improved but still vulnerable infrastructure';
+      const floodStatus = flood > 0 ? 'reduced flood vulnerability' : 'ongoing flood risk';
+      
+      document.getElementById('transformation-preview').innerHTML = `
+        With these policy settings, <strong>Lowell 2030</strong> would achieve ${housingStatus} the housing crisis, 
+        ${popStatus} reversing outmigration trends, and ${jobStatus} in the Greater Lowell workforce area. 
+        The city would have ${infraStatus} and ${floodStatus} from Merrimack River events.
+        ${jobs > 2000 && housingGap < 1000 ? '<br><br><strong style="color: var(--green);">✨ This scenario represents transformational improvement for Lowell.</strong>' : ''}
+      `;
+    }
+    
+    function applyScenario() {
+      // Visual feedback
+      document.querySelector('.action-btn').textContent = '✓ Calculated!';
+      setTimeout(() => {
+        document.querySelector('.action-btn').textContent = '📈 Calculate 5-Year Impact';
+      }, 1500);
+    }
+    
+    function resetControls() {
+      state = { housing: 500, infrastructure: 10, schoolsClosed: 0, economic: 5, floodLevel: 0 };
+      
+      housingSlider.value = 500;
+      infraSlider.value = 10;
+      econSlider.value = 5;
+      
+      document.getElementById('housing-value').textContent = '500 units';
+      document.getElementById('infrastructure-value').textContent = '$10M/yr';
+      document.getElementById('economic-value').textContent = '$5M/yr';
+      
+      document.querySelectorAll('.toggle-group').forEach(group => {
+        group.querySelectorAll('.toggle-btn').forEach((btn, i) => {
+          btn.classList.toggle('active', i === 0);
+        });
+      });
+      
+      document.getElementById('school-savings-card').style.display = 'none';
+      updateProjections();
+    }
+    
+    // Initial calculation
+    updateProjections();
+  </script>
+</body>
+</html>
