@@ -147,7 +147,7 @@
         .score-marker {
             position: absolute;
             bottom: -8px;
-            left: 32%;
+            left: 28%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
@@ -210,7 +210,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             padding-bottom: 0.75rem;
             border-bottom: 1px solid #f3f4f6;
         }
@@ -231,6 +231,21 @@
         .dimension-score.medium { background: #fef9c3; color: #854d0e; }
         .dimension-score.low { background: #fed7aa; color: #9a3412; }
         .dimension-score.critical { background: #fecaca; color: #991b1b; }
+        
+        .framework-ref {
+            background: #f5f5f4;
+            border-left: 3px solid var(--amber);
+            padding: 0.6rem 0.8rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+            font-style: italic;
+        }
+        
+        .framework-ref strong {
+            color: var(--ink);
+            font-style: normal;
+        }
         
         .findings {
             font-size: 0.95rem;
@@ -421,7 +436,6 @@
             .score-number { font-size: 3.5rem; }
             .container { padding: 1rem; }
             nav { padding: 1rem; }
-            .nav-links { gap: 0.75rem; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -434,6 +448,7 @@
             <a href="simulator.html">Simulator</a>
             <a href="maturity-assessment.html" class="active">Maturity</a>
         </nav>
+        
         <header>
             <h1>🏛️ Digital Capability Maturity</h1>
             <p class="subtitle">City of Lowell, Massachusetts — Public Sector Assessment</p>
@@ -443,7 +458,7 @@
         <div class="overall-score">
             <div class="score-display">
                 <div>
-                    <div class="score-number">2.6</div>
+                    <div class="score-number">2.4</div>
                     <div class="score-label">out of 5.0</div>
                 </div>
                 <div class="score-bar">
@@ -467,7 +482,7 @@
                 </div>
             </div>
             <div class="maturity-level">
-                <strong>Level 2-3: Emerging → Defined</strong> — Digital streamlines select services with lighthouse projects. Core standards emerging but not yet embedded across operations.
+                <strong>Level 2: Emerging</strong> — "Digital streamlines services." Leaders sponsor digitization to cut cost and reduce pain points. Some L3 capabilities in Strategy and Metrics, but critical gaps in Governance and Tech Radar drag the overall score down.
             </div>
         </div>
         
@@ -478,13 +493,15 @@
                     <span class="dimension-name">📋 Strategy</span>
                     <span class="dimension-score medium">3.0</span>
                 </div>
+                <div class="framework-ref">
+                    <strong>L3 Benchmark:</strong> "Documented digital roadmap tied to policy goals, service standards, and budget cycles."
+                </div>
                 <div class="findings">
                     <ul>
-                        <li class="strength">Master Plan 2024 completed with policy alignment <span class="source">[<a href="#ref-1">1</a>]</span></li>
-                        <li class="strength">First US "Frontrunner City" under Urban Economy Forum <span class="source">[<a href="#ref-2">2</a>]</span></li>
-                        <li class="strength">UMass Lowell partnership for UNIVER-city Labs <span class="source">[<a href="#ref-2">2</a>]</span></li>
-                        <li>Budget aligned to strategic priorities via ClearGov <span class="source">[<a href="#ref-3">3</a>]</span></li>
-                        <li class="weakness">Limited digital-specific roadmap visibility</li>
+                        <li class="strength">Master Plan 2024 ties to policy goals <span class="source">[<a href="#ref-1">1</a>]</span></li>
+                        <li class="strength">First US "Frontrunner City" — global partnership <span class="source">[<a href="#ref-2">2</a>]</span></li>
+                        <li class="strength">Budget aligned via ClearGov <span class="source">[<a href="#ref-3">3</a>]</span></li>
+                        <li class="weakness">No standalone digital roadmap document</li>
                     </ul>
                 </div>
             </div>
@@ -494,13 +511,16 @@
                     <span class="dimension-name">⚙️ Operating Model</span>
                     <span class="dimension-score medium">2.5</span>
                 </div>
+                <div class="framework-ref">
+                    <strong>L2 Benchmark:</strong> "Program governance; policy/ops sign off, IT delivers."<br>
+                    <strong>L3 Benchmark:</strong> "Named Service Owners; cross-functional product teams."
+                </div>
                 <div class="findings">
                     <ul>
                         <li class="strength">LowellSTAT performance management since 2010 <span class="source">[<a href="#ref-4">4</a>]</span></li>
-                        <li>Central MIS department as IT provider <span class="source">[<a href="#ref-5">5</a>]</span></li>
-                        <li>311 system with service ownership emerging <span class="source">[<a href="#ref-6">6</a>]</span></li>
-                        <li class="weakness">Traditional siloed department structure</li>
-                        <li class="weakness">No evidence of cross-functional product teams</li>
+                        <li>Central MIS department delivers IT <span class="source">[<a href="#ref-5">5</a>]</span></li>
+                        <li class="weakness">Traditional siloed departments — no cross-functional teams</li>
+                        <li class="weakness">No named Service Owners visible</li>
                     </ul>
                 </div>
             </div>
@@ -510,13 +530,16 @@
                     <span class="dimension-name">📈 Data & AI</span>
                     <span class="dimension-score low">2.2</span>
                 </div>
+                <div class="framework-ref">
+                    <strong>L2 Benchmark:</strong> "Basic dashboards; limited automation or predictive use."<br>
+                    <strong>L3 Benchmark:</strong> "Enterprise data program; trustworthy BI; guarded AI pilots."
+                </div>
                 <div class="findings">
                     <ul>
                         <li class="strength">GIS capability with ESRI/ArcGIS <span class="source">[<a href="#ref-7">7</a>]</span></li>
-                        <li class="strength">311 KPI dashboards and quarterly reporting <span class="source">[<a href="#ref-8">8</a>]</span></li>
-                        <li>LowellSTAT analysts for operational data <span class="source">[<a href="#ref-4">4</a>]</span></li>
-                        <li class="weakness">No visible AI/ML initiatives</li>
-                        <li class="weakness">Basic BI only — no predictive analytics</li>
+                        <li>Basic 311 dashboards <span class="source">[<a href="#ref-8">8</a>]</span></li>
+                        <li class="weakness">No AI/ML pilots visible</li>
+                        <li class="weakness">No enterprise data program — siloed datasets</li>
                     </ul>
                 </div>
             </div>
@@ -524,15 +547,18 @@
             <div class="dimension-card">
                 <div class="dimension-header">
                     <span class="dimension-name">🔧 Platforms & Ecosystem</span>
-                    <span class="dimension-score medium">2.8</span>
+                    <span class="dimension-score medium">2.5</span>
+                </div>
+                <div class="framework-ref">
+                    <strong>L2 Benchmark:</strong> "Some shared tools; integrations are manual; early cloud use."<br>
+                    <strong>L3 Benchmark:</strong> "Core shared platforms identified; API standards; early 'golden paths.'"
                 </div>
                 <div class="findings">
                     <ul>
-                        <li class="strength">Tyler ESR for 311 (multi-channel intake) <span class="source">[<a href="#ref-6">6</a>]</span></li>
-                        <li class="strength">Mobile app for citizen services <span class="source">[<a href="#ref-9">9</a>]</span></li>
-                        <li>ClearGov for budget transparency <span class="source">[<a href="#ref-3">3</a>]</span></li>
-                        <li>ArcGIS Hub for GIS data <span class="source">[<a href="#ref-10">10</a>]</span></li>
-                        <li class="weakness">No public API strategy or platform thinking</li>
+                        <li class="strength">Tyler ESR for 311 (multi-channel) <span class="source">[<a href="#ref-6">6</a>]</span></li>
+                        <li>Mobile app for citizens <span class="source">[<a href="#ref-9">9</a>]</span></li>
+                        <li class="weakness">No API standards or documentation</li>
+                        <li class="weakness">No "golden paths" for service delivery</li>
                     </ul>
                 </div>
             </div>
@@ -540,15 +566,18 @@
             <div class="dimension-card">
                 <div class="dimension-header">
                     <span class="dimension-name">🛡️ Governance & Risk</span>
-                    <span class="dimension-score critical">1.8</span>
+                    <span class="dimension-score critical">1.5</span>
+                </div>
+                <div class="framework-ref">
+                    <strong>L1 Benchmark:</strong> "Reactive compliance; manual controls."<br>
+                    <strong>L2 Benchmark:</strong> "Policies exist but aren't embedded in day-to-day workflows."
                 </div>
                 <div class="findings">
                     <ul>
                         <li class="weakness">Major ransomware breach, April 2023 <span class="source">[<a href="#ref-11">11</a>]</span></li>
                         <li class="weakness">5GB data leaked to dark web (Play group) <span class="source">[<a href="#ref-12">12</a>]</span></li>
                         <li class="weakness">Personal/medical records compromised <span class="source">[<a href="#ref-13">13</a>]</span></li>
-                        <li>ADA compliance ongoing (physical focus) <span class="source">[<a href="#ref-14">14</a>]</span></li>
-                        <li>UMass Lowell Security Operations Center (new) <span class="source">[<a href="#ref-15">15</a>]</span></li>
+                        <li>New UMass Lowell SOC partnership <span class="source">[<a href="#ref-15">15</a>]</span></li>
                     </ul>
                 </div>
             </div>
@@ -556,15 +585,18 @@
             <div class="dimension-card">
                 <div class="dimension-header">
                     <span class="dimension-name">👥 People & Culture</span>
-                    <span class="dimension-score medium">2.7</span>
+                    <span class="dimension-score medium">2.5</span>
+                </div>
+                <div class="framework-ref">
+                    <strong>L2 Benchmark:</strong> "Upskilling begins; a few champions lead change."<br>
+                    <strong>L3 Benchmark:</strong> "Communities of practice; baseline product/design/UR literacy."
                 </div>
                 <div class="findings">
                     <ul>
                         <li class="strength">Community engagement on budget <span class="source">[<a href="#ref-3">3</a>]</span></li>
-                        <li class="strength">Language access at City Hall <span class="source">[<a href="#ref-16">16</a>]</span></li>
-                        <li>Commission on Disability active <span class="source">[<a href="#ref-14">14</a>]</span></li>
-                        <li>Workforce development grants available <span class="source">[<a href="#ref-17">17</a>]</span></li>
-                        <li class="weakness">Limited evidence of digital skills training</li>
+                        <li>Language access at City Hall <span class="source">[<a href="#ref-16">16</a>]</span></li>
+                        <li class="weakness">No visible communities of practice</li>
+                        <li class="weakness">Limited digital skills training evidence</li>
                     </ul>
                 </div>
             </div>
@@ -574,12 +606,15 @@
                     <span class="dimension-name">📏 Metrics</span>
                     <span class="dimension-score medium">3.0</span>
                 </div>
+                <div class="framework-ref">
+                    <strong>L2 Benchmark:</strong> "Cycle times, backlog reduction, cost-per-transaction."<br>
+                    <strong>L3 Benchmark:</strong> "Service-level KPIs (completion rate, satisfaction, time-to-decision)."
+                </div>
                 <div class="findings">
                     <ul>
                         <li class="strength">311 KPIs: days-to-close, volume, geo-density <span class="source">[<a href="#ref-8">8</a>]</span></li>
                         <li class="strength">Quarterly reports by dept & district <span class="source">[<a href="#ref-8">8</a>]</span></li>
-                        <li class="strength">LowellSTAT cost savings: $1.4M+ <span class="source">[<a href="#ref-4">4</a>]</span></li>
-                        <li>Department performance accountability</li>
+                        <li class="strength">LowellSTAT savings: $1.4M+ tracked <span class="source">[<a href="#ref-4">4</a>]</span></li>
                         <li class="weakness">Limited citizen outcome metrics</li>
                     </ul>
                 </div>
@@ -588,15 +623,18 @@
             <div class="dimension-card">
                 <div class="dimension-header">
                     <span class="dimension-name">🔮 Futures & Foresight</span>
-                    <span class="dimension-score medium">2.8</span>
+                    <span class="dimension-score medium">2.5</span>
+                </div>
+                <div class="framework-ref">
+                    <strong>L2 Benchmark:</strong> "Monthly signal scan; short 'what-if' memos."<br>
+                    <strong>L3 Benchmark:</strong> "Quarterly signals review; annual 2–5yr scenarios feeding roadmap."
                 </div>
                 <div class="findings">
                     <ul>
-                        <li class="strength">Frontrunner City initiative (global partnership) <span class="source">[<a href="#ref-2">2</a>]</span></li>
-                        <li class="strength">UNIVER-city Labs planned with UMass <span class="source">[<a href="#ref-2">2</a>]</span></li>
-                        <li>Housing Innovation TechHub participation <span class="source">[<a href="#ref-18">18</a>]</span></li>
-                        <li>Master Plan includes future visioning <span class="source">[<a href="#ref-1">1</a>]</span></li>
+                        <li class="strength">Frontrunner City global partnership <span class="source">[<a href="#ref-2">2</a>]</span></li>
+                        <li>UNIVER-city Labs planned with UMass <span class="source">[<a href="#ref-2">2</a>]</span></li>
                         <li class="weakness">No formal scenario planning visible</li>
+                        <li class="weakness">Master Plan lacks quantified futures</li>
                     </ul>
                 </div>
             </div>
@@ -604,15 +642,18 @@
             <div class="dimension-card">
                 <div class="dimension-header">
                     <span class="dimension-name">🎯 Tech Radar</span>
-                    <span class="dimension-score low">2.0</span>
+                    <span class="dimension-score critical">1.5</span>
+                </div>
+                <div class="framework-ref">
+                    <strong>L1 Benchmark:</strong> "Vendor lists masquerading as radars; no decision rights or guardrails."<br>
+                    <strong>L2 Benchmark:</strong> "Simple radar with Adopt/Trial/Hold/Retire; updated annually."
                 </div>
                 <div class="findings">
                     <ul>
-                        <li>Established vendor relationships</li>
-                        <li>Tyler, ESRI, ClearGov ecosystem</li>
-                        <li class="weakness">No public tech radar or framework</li>
-                        <li class="weakness">No structured evaluation process visible</li>
-                        <li class="weakness">Procurement-driven vs. strategic adoption</li>
+                        <li class="weakness">No tech radar exists</li>
+                        <li class="weakness">No Adopt/Trial/Hold framework</li>
+                        <li class="weakness">Procurement-driven, not strategy-driven</li>
+                        <li>Vendor relationships (Tyler, ESRI, ClearGov)</li>
                     </ul>
                 </div>
             </div>
@@ -624,41 +665,36 @@
             <div class="key-finding alert">
                 <span class="finding-icon">🚨</span>
                 <div>
-                    <strong>Critical Security Gap:</strong> The April 2023 ransomware attack (Play group) resulted in 5GB of data leaked to the dark web, including personal records and medical billing <span class="source">[<a href="#ref-11">11</a>, <a href="#ref-12">12</a>, <a href="#ref-13">13</a>]</span>. This significantly impacts the governance score and indicates reactive rather than proactive security posture.
+                    <strong>Critical: Governance & Tech Radar at L1</strong><br>
+                    The April 2023 ransomware attack demonstrates policies weren't embedded in workflows — a L1 trait ("reactive compliance"). No tech radar exists at all, falling below the L2 requirement of "simple radar with Adopt/Trial/Hold."
                 </div>
             </div>
             
             <div class="key-finding positive">
                 <span class="finding-icon">🌟</span>
                 <div>
-                    <strong>Strategic Recognition:</strong> Lowell's designation as the first US "Frontrunner City" by the Urban Economy Forum positions them for global partnerships and innovation investment <span class="source">[<a href="#ref-2">2</a>]</span>. The UMass Lowell collaboration adds academic research capacity.
+                    <strong>Bright Spots: Strategy & Metrics at L3</strong><br>
+                    Master Plan 2024 and Frontrunner City designation show documented strategy tied to policy. 311 KPIs and LowellSTAT demonstrate service-level metrics beyond basic cycle times.
                 </div>
             </div>
             
             <div class="key-finding">
                 <span class="finding-icon">📊</span>
                 <div>
-                    <strong>Strong Performance Foundation:</strong> LowellSTAT (since 2010) and the 311 KPI system demonstrate commitment to data-driven operations <span class="source">[<a href="#ref-4">4</a>, <a href="#ref-8">8</a>]</span>. However, capabilities remain at the BI/reporting level without advancing to predictive analytics or AI.
-                </div>
-            </div>
-            
-            <div class="key-finding">
-                <span class="finding-icon">🔧</span>
-                <div>
-                    <strong>Platform Potential:</strong> Good foundation with Tyler ESR, ArcGIS, and mobile apps, but no platform strategy or API ecosystem. Operating as tool consumers rather than platform providers.
+                    <strong>The L2 Plateau</strong><br>
+                    Most dimensions sit at L2: "Leaders sponsor digitization to cut cost." Lowell has shared tools (Tyler, ESRI), basic dashboards, and upskilling beginning — but lacks the cross-functional teams, API standards, and enterprise data programs needed for L3.
                 </div>
             </div>
         </div>
         
         <div class="recommendations">
-            <h2>💡 Recommendations to Reach Level 3 (Defined)</h2>
+            <h2>💡 Priority Actions to Reach Level 3</h2>
             <ol>
-                <li><strong>Security Remediation:</strong> Leverage the new UMass Lowell Security Operations Center partnership. Implement compliance-by-design, conduct regular penetration testing, and establish incident response playbooks.</li>
-                <li><strong>Formalize Tech Radar:</strong> Create a public technology standards document with Adopt/Trial/Hold/Retire classifications. Tie procurement decisions to this framework.</li>
-                <li><strong>Advance Data Capabilities:</strong> Move beyond BI dashboards to predictive analytics. Start with 311 data — predict service demand, optimize resource allocation, identify patterns before they become problems.</li>
-                <li><strong>Platform Thinking:</strong> Document APIs for existing systems. Enable third-party integration. Treat core systems (311, GIS, payments) as internal platforms with adoption targets.</li>
-                <li><strong>Digital Accessibility Audit:</strong> Conduct WCAG 2.1 AA compliance audit of all digital services. Build accessibility into development standards, not as afterthought.</li>
-                <li><strong>Service Ownership Model:</strong> Pilot cross-functional product teams for 2-3 key citizen services. Assign outcome accountability, not just delivery responsibility.</li>
+                <li><strong>Governance Remediation (L1→L2):</strong> Embed security policies in workflows. Leverage UMass Lowell SOC. Implement compliance-by-design, not reactive audits.</li>
+                <li><strong>Create a Tech Radar (L1→L2):</strong> Document a simple Adopt/Trial/Hold/Retire framework for technology decisions. Update annually. Tie procurement to the radar.</li>
+                <li><strong>API Standards (L2→L3):</strong> Document APIs for Tyler ESR, GIS, and payments. Enable third-party integrations. Publish an API catalog.</li>
+                <li><strong>Cross-Functional Teams (L2→L3):</strong> Pilot 2-3 product teams with named Service Owners. Embed tech/data/design in teams, not as separate departments.</li>
+                <li><strong>Enterprise Data Program (L2→L3):</strong> Consolidate siloed datasets. Create reference registers. Pilot one guarded AI use case (e.g., 311 demand prediction).</li>
             </ol>
         </div>
         
@@ -673,7 +709,7 @@
                 </li>
                 <li id="ref-2">
                     <span class="ref-num">2</span>
-                    <strong>City of Lowell Recognized as the First U.S "Frontrunner City" in Urban Transformation</strong><br>
+                    <strong>City of Lowell Recognized as the First U.S "Frontrunner City"</strong><br>
                     <a href="https://www.lowellma.gov/m/newsflash/home/detail/942" target="_blank">lowellma.gov/m/newsflash/home/detail/942</a>
                     <span class="ref-date">• July 2025</span>
                 </li>
@@ -691,13 +727,13 @@
                 </li>
                 <li id="ref-5">
                     <span class="ref-num">5</span>
-                    <strong>Management Information Systems (MIS) Department Overview</strong><br>
+                    <strong>Management Information Systems (MIS) Department</strong><br>
                     <a href="https://www.lowellma.gov/270/Overview" target="_blank">lowellma.gov/270/Overview</a>
                     <span class="ref-date">• Accessed Feb 2026</span>
                 </li>
                 <li id="ref-6">
                     <span class="ref-num">6</span>
-                    <strong>Lowell 311 Non-Emergency Service Request System</strong><br>
+                    <strong>Lowell 311 Service Request System</strong><br>
                     <a href="https://lowellma.gov/1977/Lowell-311" target="_blank">lowellma.gov/1977/Lowell-311</a>
                     <span class="ref-date">• Accessed Feb 2026</span>
                 </li>
@@ -719,35 +755,23 @@
                     <a href="https://apps.apple.com/us/app/city-of-lowell-ma/id1591467196" target="_blank">App Store</a>
                     <span class="ref-date">• Accessed Feb 2026</span>
                 </li>
-                <li id="ref-10">
-                    <span class="ref-num">10</span>
-                    <strong>City of Lowell GIS Hub Page</strong><br>
-                    <a href="https://lowell-gis-web-applications-lowell.hub.arcgis.com/" target="_blank">lowell-gis-web-applications-lowell.hub.arcgis.com</a>
-                    <span class="ref-date">• Accessed Feb 2026</span>
-                </li>
                 <li id="ref-11">
                     <span class="ref-num">11</span>
-                    <strong>Cyberattack disrupts Lowell city government, shuts down computers</strong><br>
+                    <strong>Cyberattack disrupts Lowell city government</strong><br>
                     <a href="https://www.cbsnews.com/boston/news/cyberattack-lowell-city-government/" target="_blank">CBS Boston</a>
                     <span class="ref-date">• April 25, 2023</span>
                 </li>
                 <li id="ref-12">
                     <span class="ref-num">12</span>
-                    <strong>Lowell MA Cyber Attack: What Data Was Released?</strong><br>
+                    <strong>Lowell MA Cyber Attack: Data Released to Dark Web</strong><br>
                     <a href="https://www.nbcboston.com/news/local/lowell-hit-with-cyber-attack-some-data-released-to-dark-web-report/3045330/" target="_blank">NBC Boston</a>
                     <span class="ref-date">• May 16, 2023</span>
                 </li>
                 <li id="ref-13">
                     <span class="ref-num">13</span>
-                    <strong>Hacked data appears to show scope of Lowell's network attack</strong><br>
+                    <strong>Hacked data shows scope of Lowell's network attack</strong><br>
                     <a href="https://www.lowellsun.com/2023/05/18/hacked-data-appears-to-show-scope-of-lowells-network-attack/" target="_blank">Lowell Sun</a>
                     <span class="ref-date">• May 18, 2023</span>
-                </li>
-                <li id="ref-14">
-                    <span class="ref-num">14</span>
-                    <strong>Commission on Disability - City of Lowell</strong><br>
-                    <a href="https://www.lowellma.gov/644/Commission-on-Disability" target="_blank">lowellma.gov/644/Commission-on-Disability</a>
-                    <span class="ref-date">• Accessed Feb 2026</span>
                 </li>
                 <li id="ref-15">
                     <span class="ref-num">15</span>
@@ -761,25 +785,14 @@
                     <a href="https://www.lowellma.gov/" target="_blank">lowellma.gov</a>
                     <span class="ref-date">• Language Access Hours</span>
                 </li>
-                <li id="ref-17">
-                    <span class="ref-num">17</span>
-                    <strong>Workforce Development - City of Lowell</strong><br>
-                    <a href="https://www.lowellma.gov/796/Workforce-Development" target="_blank">lowellma.gov/796/Workforce-Development</a>
-                    <span class="ref-date">• Accessed Feb 2026</span>
-                </li>
-                <li id="ref-18">
-                    <span class="ref-num">18</span>
-                    <strong>UMass Lowell Seeks Solutions to Housing Crisis Through Massachusetts TechHubs Program</strong><br>
-                    <a href="https://www.uml.edu/news/press-releases/2025/housing-innovation-techhub.aspx" target="_blank">UMass Lowell</a>
-                    <span class="ref-date">• 2025</span>
-                </li>
             </ol>
         </div>
         
         <div class="methodology">
             <h3>📋 Methodology</h3>
-            <p>This assessment uses the <strong>Public Sector Organizational Digital Capability Maturity Model</strong> covering nine dimensions: Strategy, Operating Model, Data/AI, Platforms & Ecosystem, Governance & Risk, People & Culture, Metrics, Futures/Foresight, and Tech Radar. Each dimension scored 1-5 based on publicly available evidence.</p>
-            <p style="margin-top: 0.75rem;">Research conducted February 2026 using official City of Lowell resources, GovTech publications, Massachusetts state sources, UMass Lowell announcements, and news archives.</p>
+            <p>This assessment uses the <strong>Public Sector Organizational Digital Capability Maturity Model</strong> (Platforms • Data • People • Policy). Each of the 9 dimensions is scored 1-5 based on publicly available evidence mapped to explicit level criteria from the framework.</p>
+            <p style="margin-top: 0.75rem;"><strong>Scoring:</strong> L1 (1.0-1.5) = Ad-hoc | L2 (2.0-2.5) = Emerging | L3 (3.0-3.5) = Defined | L4 (4.0-4.5) = Managed | L5 (4.5-5.0) = Optimizing</p>
+            <p style="margin-top: 0.75rem;">Research conducted February 2026 using official City of Lowell resources, GovTech publications, Massachusetts state sources, and news archives.</p>
         </div>
         
         <footer>
