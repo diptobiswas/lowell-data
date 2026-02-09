@@ -269,6 +269,84 @@
       color: var(--ink-muted);
     }
     
+    /* Project Cards */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .project-card {
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+    }
+    .project-card.flagship {
+      border-color: var(--amber);
+      background: linear-gradient(135deg, rgba(245,158,11,0.05), rgba(255,251,245,0.9));
+    }
+    .project-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      background: var(--amber);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      border-radius: 100px;
+    }
+    .project-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .project-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--amber);
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+    .project-desc {
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    .project-details {
+      list-style: none;
+      font-size: 0.8rem;
+      margin-bottom: 16px;
+    }
+    .project-details li {
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      color: var(--ink-soft);
+    }
+    .project-details li:last-child { border: none; }
+    .project-details strong { color: var(--ink); }
+    .project-timeline {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .timeline-item {
+      padding: 4px 10px;
+      background: rgba(0,0,0,0.04);
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+    }
+    .timeline-item.active {
+      background: rgba(16,185,129,0.1);
+      color: var(--green);
+    }
+    
     /* Decision Table */
     .decision-table td:first-child { font-weight: 500; }
     .decision-table td:nth-child(2) { font-weight: 600; color: var(--ink); }
@@ -680,6 +758,108 @@
       </div>
     </section>
     
+    <!-- Major Development Projects -->
+    <section class="section">
+      <div class="section-header">
+        <span>🏗️</span>
+        <h2>Major Development Projects</h2>
+      </div>
+      
+      <div class="project-grid">
+        <div class="project-card flagship">
+          <div class="project-badge">FLAGSHIP</div>
+          <h3>🎓 UMass Lowell LINC</h3>
+          <div class="project-value">$800M</div>
+          <p class="project-desc">Lowell Innovation Network Corridor — largest development in 20+ years</p>
+          <ul class="project-details">
+            <li><strong>~500 housing units</strong> for young professionals</li>
+            <li><strong>600,000 sq ft</strong> commercial/R&D space</li>
+            <li><strong>461-bed dormitory</strong> near LeLacheur Park</li>
+            <li>Partners: GMH Communities, Wexford ($600M private)</li>
+          </ul>
+          <div class="project-timeline">
+            <span class="timeline-item">Groundbreaking 2025</span>
+            <span class="timeline-item">Occupancy 2027</span>
+          </div>
+        </div>
+        
+        <div class="project-card flagship">
+          <div class="project-badge">CONSENT DECREE</div>
+          <h3>🚰 Centralville CSO Separation</h3>
+          <div class="project-value">$300M</div>
+          <p class="project-desc">Citywide sewer separation to reduce Merrimack River pollution</p>
+          <ul class="project-details">
+            <li><strong>490 acres</strong> of sewer separation</li>
+            <li><strong>7+ miles</strong> new drains, sewers, water lines</li>
+            <li><strong>35M gallons</strong> sewage diverted from river annually</li>
+            <li>EPA consent decree requirement</li>
+          </ul>
+          <div class="project-timeline">
+            <span class="timeline-item">Construction Spring 2025</span>
+            <span class="timeline-item">Complete 2032</span>
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <h3>🏘️ Hamilton Canal District</h3>
+          <div class="project-value">$800M</div>
+          <p class="project-desc">Mixed-use waterfront redevelopment connecting downtown to commuter rail</p>
+          <ul class="project-details">
+            <li><strong>15 acres</strong> vacant industrial land</li>
+            <li><strong>700+ housing units</strong></li>
+            <li><strong>55,000 sq ft</strong> retail</li>
+            <li>Lupoli Companies lead developer</li>
+          </ul>
+          <div class="project-timeline">
+            <span class="timeline-item">Multi-phase</span>
+            <span class="timeline-item">Ongoing</span>
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <h3>🏠 Merrimack Corridor</h3>
+          <div class="project-value">118 units</div>
+          <p class="project-desc">Affordable housing in the Acre neighborhood</p>
+          <ul class="project-details">
+            <li>Lowell Housing Authority project</li>
+            <li>Two vacant sites in Acre</li>
+            <li>100% affordable units</li>
+          </ul>
+          <div class="project-timeline">
+            <span class="timeline-item">In Development</span>
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <h3>🚌 LRTA Fare-Free Transit</h3>
+          <div class="project-value">FREE</div>
+          <p class="project-desc">State-funded pilot program for all LRTA buses</p>
+          <ul class="project-details">
+            <li>All fixed routes + paratransit</li>
+            <li>Serves 14 communities</li>
+            <li>Goal: increase ridership, reduce congestion</li>
+          </ul>
+          <div class="project-timeline">
+            <span class="timeline-item active">Dec 2024 – Jun 2026</span>
+          </div>
+        </div>
+        
+        <div class="project-card">
+          <h3>🚶 Acre Canal Walkway</h3>
+          <div class="project-value">$1.4M</div>
+          <p class="project-desc">Western Canal Walkway extension into Acre neighborhood</p>
+          <ul class="project-details">
+            <li>Dutton St to Suffolk St</li>
+            <li>Extends canal walkway system</li>
+            <li>Federal + NPS funding</li>
+          </ul>
+          <div class="project-timeline">
+            <span class="timeline-item">Construction</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    
     <!-- Budget & Planning -->
     <section class="section">
       <div class="section-header">
@@ -730,12 +910,13 @@
         </div>
         
         <div class="data-card">
-          <div class="data-card-header">Infrastructure Projects</div>
+          <div class="data-card-header">Infrastructure Status</div>
           <table class="data-table" style="font-size: 0.85rem;">
             <tbody>
-              <tr><td>CSO Sewer Separation</td><td><span class="trend-badge up">In Progress</span></td></tr>
-              <tr><td>Complete Streets Plan</td><td><span class="trend-badge up">Updated 2024</span></td></tr>
-              <tr><td>LRTA Fare-Free Pilot</td><td><span class="trend-badge up">Dec 2024</span></td></tr>
+              <tr><td>CSO Separation (Centralville)</td><td><span class="trend-badge up">Starting 2025</span></td></tr>
+              <tr><td>Humphrey's Brook CSO</td><td><span class="trend-badge up">In Progress</span></td></tr>
+              <tr><td>Billing Brook CSO</td><td><span class="trend-badge up">In Progress</span></td></tr>
+              <tr><td>Tilden Street CSO</td><td><span class="trend-badge up">In Progress</span></td></tr>
               <tr><td>FEMA Flood Maps</td><td><span class="trend-badge neutral">Updated 2021</span></td></tr>
             </tbody>
           </table>
