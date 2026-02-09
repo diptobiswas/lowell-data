@@ -3,142 +3,223 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lowell Data Dashboard Suite</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <title>Lowell Data Suite</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --cream: #FFF4D6;
-      --ink: #2A201C;
+      --cream: #FFFBF5;
+      --warm-white: #FFF9F0;
       --amber: #F59E0B;
+      --amber-light: #FCD34D;
       --coral: #FB7185;
-      --blue: #3B82F6;
-      --purple: #8B5CF6;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Alegreya Sans', sans-serif;
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
-      color: white;
-      min-height: 100vh;
-      padding: 48px 24px;
-    }
-    .container { max-width: 900px; margin: 0 auto; }
-    h1 { 
-      font-family: 'Fraunces', serif; 
-      font-size: 2.5rem; 
-      text-align: center;
-      margin-bottom: 12px;
-      background: linear-gradient(135deg, var(--amber), var(--coral)); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent; 
-    }
-    .subtitle { 
-      text-align: center; 
-      color: rgba(255,255,255,0.6); 
-      margin-bottom: 48px;
-      font-size: 1.1rem;
+      --ink: #1C1917;
+      --ink-soft: #44403C;
+      --glass: rgba(255, 251, 245, 0.7);
+      --glass-border: rgba(245, 158, 11, 0.2);
     }
     
-    .dashboard-grid {
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    /* Ambient background */
+    .ambient {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .ambient::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%);
+      animation: float 20s ease-in-out infinite;
+    }
+    .ambient::after {
+      content: '';
+      position: absolute;
+      bottom: -10%;
+      left: -5%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(251,113,133,0.1) 0%, transparent 70%);
+      animation: float 25s ease-in-out infinite reverse;
+    }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, -30px); }
+    }
+    
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+    
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+    .logo {
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -2px;
+      line-height: 1.1;
+    }
+    .tagline {
+      margin-top: 16px;
+      font-size: 1.1rem;
+      color: var(--ink-soft);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    /* Dashboard Grid */
+    .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 24px;
     }
     
-    .dashboard-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      padding: 32px;
+    .card {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px 32px;
       text-decoration: none;
-      color: white;
-      transition: transform 0.2s, border-color 0.3s, box-shadow 0.3s;
-      display: flex;
-      flex-direction: column;
+      color: var(--ink);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
     }
-    .dashboard-card:hover {
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--amber), var(--coral));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .card:hover {
       transform: translateY(-8px);
-      border-color: rgba(255,255,255,0.3);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      box-shadow: 0 32px 64px -16px rgba(245, 158, 11, 0.2);
+      border-color: var(--amber);
     }
+    .card:hover::before { opacity: 1; }
     
     .card-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--amber), var(--amber-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 24px;
     }
-    .card-title {
-      font-family: 'Fraunces', serif;
-      font-size: 1.4rem;
+    .card:nth-child(2) .card-icon { background: linear-gradient(135deg, var(--coral), #FDA4AF); }
+    .card:nth-child(3) .card-icon { background: linear-gradient(135deg, #A78BFA, #C4B5FD); }
+    
+    .card h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
       margin-bottom: 12px;
+      letter-spacing: -0.5px;
     }
-    .card-desc {
+    .card p {
       font-size: 0.95rem;
-      color: rgba(255,255,255,0.7);
+      color: var(--ink-soft);
       line-height: 1.6;
-      flex: 1;
     }
     .card-tag {
       display: inline-block;
-      margin-top: 16px;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.8rem;
+      margin-top: 20px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 0.75rem;
       font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--amber);
     }
-    .tag-main { background: linear-gradient(135deg, var(--amber), #D97706); }
-    .tag-correlations { background: linear-gradient(135deg, var(--coral), #DC2626); }
-    .tag-simulator { background: linear-gradient(135deg, var(--blue), #2563EB); }
+    .card:nth-child(2) .card-tag { background: rgba(251, 113, 133, 0.1); color: var(--coral); }
+    .card:nth-child(3) .card-tag { background: rgba(167, 139, 250, 0.1); color: #7C3AED; }
     
+    /* Footer */
     .footer {
-      margin-top: 64px;
+      margin-top: 80px;
       text-align: center;
-      color: rgba(255,255,255,0.4);
       font-size: 0.85rem;
+      color: var(--ink-soft);
     }
-    .footer a { color: rgba(255,255,255,0.5); }
+    .footer a { color: var(--amber); text-decoration: none; }
   </style>
 </head>
 <body>
+  <div class="ambient"></div>
+  
   <div class="container">
-    <h1>📊 Lowell Data Suite</h1>
-    <p class="subtitle">A comprehensive data analysis toolkit for understanding Lowell, Massachusetts</p>
+    <header class="header">
+      <div class="logo">Data Suite</div>
+      <h1>Lowell, MA</h1>
+      <p class="tagline">Comprehensive city analytics with interactive policy modeling</p>
+    </header>
     
-    <div class="dashboard-grid">
-      <a href="dashboard.html" class="dashboard-card">
-        <div class="card-icon">📈</div>
-        <div class="card-title">Main Dashboard</div>
-        <p class="card-desc">
-          Core metrics: population, demographics, economic data, housing, health indicators, 
-          and environmental factors. The foundation for understanding Lowell.
-        </p>
-        <span class="card-tag tag-main">Core Data</span>
+    <div class="grid">
+      <a href="dashboard.html" class="card">
+        <div class="card-icon">📊</div>
+        <h2>Dashboard</h2>
+        <p>Population, economy, housing, health — core metrics that define the city.</p>
+        <span class="card-tag">Metrics</span>
       </a>
       
-      <a href="correlations.html" class="dashboard-card">
+      <a href="correlations.html" class="card">
         <div class="card-icon">🔍</div>
-        <div class="card-title">Hidden Correlations</div>
-        <p class="card-desc">
-          Novel insights revealing how housing age, health outcomes, demographics, and 
-          economic mobility interconnect. Discover intervention points others miss.
-        </p>
-        <span class="card-tag tag-correlations">Analysis</span>
+        <h2>Correlations</h2>
+        <p>Hidden connections between housing age, health outcomes, and economic mobility.</p>
+        <span class="card-tag">Analysis</span>
       </a>
       
-      <a href="simulator.html" class="dashboard-card">
+      <a href="simulator.html" class="card">
         <div class="card-icon">🎮</div>
-        <div class="card-title">Policy Simulator</div>
-        <p class="card-desc">
-          Interactive "what-if" scenarios: housing incentives, job creation, education 
-          investment, infrastructure upgrades. See projected impacts over 5-10 years.
-        </p>
-        <span class="card-tag tag-simulator">Interactive</span>
+        <h2>Simulator</h2>
+        <p>Model policy scenarios and project 5-10 year impacts on the city.</p>
+        <span class="card-tag">Interactive</span>
       </a>
     </div>
     
-    <div class="footer">
-      <p>Built with data from US Census, DataUSA, MA DPH, EPA, and local sources</p>
-      <p style="margin-top: 8px;">Created by Minnie 🐈‍⬛ for Dipto</p>
-    </div>
+    <footer class="footer">
+      <p>Built with public data · <a href="https://github.com/diptobiswas/lowell-data">Source</a></p>
+    </footer>
   </div>
 </body>
 </html>
