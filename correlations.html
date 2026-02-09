@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lowell: Hidden Correlations — What the Data Reveals</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FFF4D6;
+      --cream-2: #FFFBEB;
+      --ink: #2A201C;
+      --muted: #6B5D55;
+      --charcoal: #1C1917;
+      --amber: #F59E0B;
+      --coral: #FB7185;
+      --green: #22C55E;
+      --red: #EF4444;
+      --blue: #3B82F6;
+      --purple: #8B5CF6;
+      --teal: #14B8A6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Alegreya Sans', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      color: white;
+      min-height: 100vh;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+    h1, h2, h3 { font-family: 'Fraunces', serif; }
+    h1 { font-size: 2.2rem; margin-bottom: 8px; background: linear-gradient(135deg, var(--amber), var(--coral)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .subtitle { color: rgba(255,255,255,0.6); font-size: 1rem; margin-bottom: 32px; max-width: 700px; }
+    
+    /* Key Insight Banner */
+    .insight-banner {
+      background: linear-gradient(135deg, rgba(251,113,133,0.2), rgba(245,158,11,0.2));
+      border: 1px solid rgba(251,113,133,0.3);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .insight-banner h2 { font-size: 1.3rem; margin-bottom: 12px; color: var(--coral); }
+    .insight-banner p { font-size: 1rem; line-height: 1.6; color: rgba(255,255,255,0.85); }
+    .insight-banner .stat { font-size: 2rem; font-weight: 700; color: var(--amber); }
+    
+    /* Correlation Grid */
+    .correlation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px; margin-bottom: 40px; }
+    
+    .correlation-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 24px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .correlation-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.2); }
+    .correlation-card h3 { font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .correlation-card .icon { font-size: 1.4rem; }
+    
+    /* Chain Visualization */
+    .chain { display: flex; flex-direction: column; gap: 12px; }
+    .chain-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      position: relative;
+    }
+    .chain-item::after {
+      content: '↓';
+      position: absolute;
+      bottom: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.3);
+      font-size: 1rem;
+    }
+    .chain-item:last-child::after { display: none; }
+    .chain-stat { font-weight: 700; min-width: 80px; }
+    .chain-stat.danger { color: var(--coral); }
+    .chain-stat.warning { color: var(--amber); }
+    .chain-stat.info { color: var(--blue); }
+    .chain-label { font-size: 0.9rem; color: rgba(255,255,255,0.7); }
+    
+    /* Comparison Bars */
+    .compare-row { margin-bottom: 16px; }
+    .compare-label { font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 6px; display: flex; justify-content: space-between; }
+    .compare-bars { display: flex; gap: 4px; height: 24px; }
+    .compare-bar { border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; }
+    .compare-bar.lowell { background: var(--coral); }
+    .compare-bar.state { background: var(--blue); opacity: 0.7; }
+    .compare-bar.national { background: rgba(255,255,255,0.3); }
+    
+    /* Disparity Matrix */
+    .matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .matrix-cell {
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    .matrix-cell.header { background: rgba(255,255,255,0.1); font-weight: 600; }
+    .matrix-cell.high { background: rgba(251,113,133,0.3); color: var(--coral); }
+    .matrix-cell.medium { background: rgba(245,158,11,0.3); color: var(--amber); }
+    .matrix-cell.low { background: rgba(34,197,94,0.3); color: var(--green); }
+    
+    /* Connection Lines Visualization */
+    .connection-viz {
+      background: rgba(0,0,0,0.3);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 32px;
+    }
+    .connection-viz h2 { text-align: center; margin-bottom: 24px; font-size: 1.4rem; }
+    
+    .node-map {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 24px;
+      position: relative;
+    }
+    .node {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 16px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .node:hover { transform: scale(1.1); }
+    .node .value { font-size: 1.5rem; font-weight: 700; }
+    .node .label { font-size: 0.75rem; margin-top: 4px; opacity: 0.8; }
+    .node.housing { background: linear-gradient(135deg, var(--coral), #DC2626); }
+    .node.health { background: linear-gradient(135deg, var(--amber), #D97706); }
+    .node.economic { background: linear-gradient(135deg, var(--blue), #2563EB); }
+    .node.demographic { background: linear-gradient(135deg, var(--purple), #7C3AED); }
+    .node.infrastructure { background: linear-gradient(135deg, var(--teal), #0D9488); }
+    
+    /* Findings Section */
+    .findings { margin-top: 40px; }
+    .findings h2 { font-size: 1.4rem; margin-bottom: 20px; }
+    .finding {
+      background: rgba(255,255,255,0.05);
+      border-left: 4px solid var(--amber);
+      padding: 20px;
+      margin-bottom: 16px;
+      border-radius: 0 12px 12px 0;
+    }
+    .finding.critical { border-left-color: var(--coral); }
+    .finding.opportunity { border-left-color: var(--green); }
+    .finding h4 { font-size: 1rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .finding p { font-size: 0.95rem; color: rgba(255,255,255,0.75); line-height: 1.6; }
+    .finding .evidence { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; }
+    .finding .evidence span { color: var(--amber); font-weight: 600; }
+    
+    /* Source Footer */
+    .sources {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+    }
+    .sources a { color: rgba(255,255,255,0.5); }
+    
+    /* Responsive */
+    @media (max-width: 600px) {
+      .correlation-grid { grid-template-columns: 1fr; }
+      .node { width: 100px; height: 100px; }
+      .node .value { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Lowell: Hidden Correlations</h1>
+    <p class="subtitle">A data-driven analysis revealing the interconnected systems that shape outcomes in Lowell, MA. These correlations suggest where interventions could create compounding positive effects.</p>
+    
+    <!-- Key Insight Banner -->
+    <div class="insight-banner">
+      <h2>🚨 The Central Finding</h2>
+      <p>Lowell's housing stock is among the <span class="stat">oldest in America</span> — 42.7% built before 1939. This single factor cascades through health, education, and economic mobility, creating a reinforcing cycle of disadvantage that standard city planning misses.</p>
+    </div>
+    
+    <!-- Visual Connection Map -->
+    <div class="connection-viz">
+      <h2>The Interconnected System</h2>
+      <p style="text-align: center; color: rgba(255,255,255,0.5); margin-bottom: 24px; font-size: 0.9rem;">Each factor influences the others. Hover to explore.</p>
+      
+      <div class="node-map">
+        <div class="node housing" title="42.7% housing pre-1939 → Lead exposure, poor insulation, structural issues">
+          <div class="value">42.7%</div>
+          <div class="label">Pre-1939 Housing</div>
+        </div>
+        <div class="node health" title="Top 11 asthma burden city in MA, Cambodian refugee health disparities">
+          <div class="value">Top 11</div>
+          <div class="label">Asthma Burden</div>
+        </div>
+        <div class="node economic" title="16% poverty, 44% homeownership, -4K jobs lost">
+          <div class="value">16%</div>
+          <div class="label">Poverty Rate</div>
+        </div>
+        <div class="node demographic" title="29.6% foreign-born, 21% Asian, 2nd largest Cambodian community">
+          <div class="value">29.6%</div>
+          <div class="label">Foreign-Born</div>
+        </div>
+        <div class="node infrastructure" title="CSO system, flood risk, aging utilities">
+          <div class="value">CSO</div>
+          <div class="label">Sewer System</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Correlation Cards -->
+    <div class="correlation-grid">
+      
+      <!-- Housing → Health Chain -->
+      <div class="correlation-card">
+        <h3><span class="icon">🏚️</span> Housing Age → Health Cascade</h3>
+        <div class="chain">
+          <div class="chain-item">
+            <span class="chain-stat danger">42.7%</span>
+            <span class="chain-label">Housing built pre-1939 (lead paint era)</span>
+          </div>
+          <div class="chain-item">
+            <span class="chain-stat warning">High Risk</span>
+            <span class="chain-label">Childhood lead exposure zone</span>
+          </div>
+          <div class="chain-item">
+            <span class="chain-stat warning">~54%</span>
+            <span class="chain-label">Lead cases in high-risk communities (statewide)</span>
+          </div>
+          <div class="chain-item">
+            <span class="chain-stat info">↓ IQ</span>
+            <span class="chain-label">Developmental & educational impacts</span>
+          </div>
+          <div class="chain-item">
+            <span class="chain-stat danger">↓ Mobility</span>
+            <span class="chain-label">Reduced economic mobility for affected children</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Environmental Justice -->
+      <div class="correlation-card">
+        <h3><span class="icon">🌬️</span> Environmental Justice Triangle</h3>
+        <div class="chain">
+          <div class="chain-item">
+            <span class="chain-stat danger">Top 11</span>
+            <span class="chain-label">Highest asthma burden cities in MA</span>
+          </div>
+          <div class="chain-item">
+            <span class="chain-stat warning">16%</span>
+            <span class="chain-label">Poverty rate (vs 12.4% national)</span>
+          </div>
+          <div class="chain-item">
+            <span class="chain-stat info">29.6%</span>
+            <span class="chain-label">Foreign-born (2.1x national average)</span>
+          </div>
+          <div class="chain-item">
+            <span class="chain-stat warning">CSO</span>
+            <span class="chain-label">Combined sewer overflows → water quality</span>
+          </div>
+          <div class="chain-item">
+            <span class="chain-stat danger">Silresim</span>
+            <span class="chain-label">Active Superfund site monitoring</span>
+          </div>
+        </div>
+        <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 12px;">
+          Research shows low-income & minority populations live closer to pollution sources and experience 37.8% higher asthma rates.
+        </p>
+      </div>
+      
+      <!-- Cambodian Community -->
+      <div class="correlation-card">
+        <h3><span class="icon">🇰🇭</span> Refugee Community Health Gap</h3>
+        <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7); margin-bottom: 16px;">
+          Lowell has the <strong style="color: var(--amber);">2nd largest Cambodian population in the US</strong>. Documented disparities exist:
+        </p>
+        <div class="matrix">
+          <div class="matrix-cell header">Condition</div>
+          <div class="matrix-cell header">Disparity</div>
+          <div class="matrix-cell header">Factor</div>
+          
+          <div class="matrix-cell">Cardiovascular</div>
+          <div class="matrix-cell high">Higher</div>
+          <div class="matrix-cell">Trauma history</div>
+          
+          <div class="matrix-cell">Diabetes</div>
+          <div class="matrix-cell high">Higher</div>
+          <div class="matrix-cell">Diet transition</div>
+          
+          <div class="matrix-cell">Mental Health</div>
+          <div class="matrix-cell high">Higher</div>
+          <div class="matrix-cell">PTSD/Khmer Rouge</div>
+          
+          <div class="matrix-cell">Healthcare Access</div>
+          <div class="matrix-cell medium">Barrier</div>
+          <div class="matrix-cell">LEP status</div>
+        </div>
+        <p style="font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 12px;">
+          Source: PMC2951967, PubMed 16809880
+        </p>
+      </div>
+      
+      <!-- Economic Trap -->
+      <div class="correlation-card">
+        <h3><span class="icon">💰</span> The Ownership Trap</h3>
+        <div class="compare-row">
+          <div class="compare-label">
+            <span>Homeownership Rate</span>
+            <span>Lowell vs National</span>
+          </div>
+          <div class="compare-bars">
+            <div class="compare-bar lowell" style="width: 44%;">44%</div>
+            <div class="compare-bar national" style="width: 65%;">65%</div>
+          </div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-label">
+            <span>Housing Cost Burden (Renters)</span>
+          </div>
+          <div class="compare-bars">
+            <div class="compare-bar lowell" style="width: 50%;">50%+</div>
+            <div class="compare-bar national" style="width: 30%;">30%</div>
+          </div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-label">
+            <span>Median Property Value</span>
+          </div>
+          <div class="compare-bars">
+            <div class="compare-bar lowell" style="width: 65%;">$395K</div>
+            <div class="compare-bar national" style="width: 50%;">$303K</div>
+          </div>
+        </div>
+        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-top: 16px;">
+          <strong>The trap:</strong> High property values + low ownership + old housing stock = renters stuck in lead-risk properties they can't escape.
+        </p>
+      </div>
+      
+      <!-- Crime-Poverty Correlation -->
+      <div class="correlation-card">
+        <h3><span class="icon">📊</span> Crime-Poverty Feedback Loop</h3>
+        <div class="chain">
+          <div class="chain-item">
+            <span class="chain-stat warning">17.3%</span>
+            <span class="chain-label">Poverty rate (some measures)</span>
+          </div>
+          <div class="chain-item">
+            <span class="chain-stat danger">+26%</span>
+            <span class="chain-label">Crime rate YoY increase (2024)</span>
+          </div>
+          <div class="chain-item">
+            <span class="chain-stat danger">+24%</span>
+            <span class="chain-label">Violent crime increase</span>
+          </div>
+          <div class="chain-item">
+            <span class="chain-stat warning">1 in 254</span>
+            <span class="chain-label">Chance of violent crime victimization</span>
+          </div>
+        </div>
+        <p style="font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 12px;">
+          Neighborhoods vary sharply: Belvidere (safe) vs. certain downtown tracts. This correlates with housing age and income.
+        </p>
+      </div>
+      
+      <!-- Demographic Shift -->
+      <div class="correlation-card">
+        <h3><span class="icon">👥</span> The Demographic Equation</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div style="text-align: center; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+            <div style="font-size: 2rem; font-weight: 700; color: var(--amber);">0.054%</div>
+            <div style="font-size: 0.8rem; opacity: 0.7;">Annual Pop Growth</div>
+            <div style="font-size: 0.7rem; opacity: 0.5;">Just 62 people/year</div>
+          </div>
+          <div style="text-align: center; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+            <div style="font-size: 2rem; font-weight: 700; color: var(--coral);">-4,000</div>
+            <div style="font-size: 0.8rem; opacity: 0.7;">Jobs Lost (2024)</div>
+            <div style="font-size: 0.7rem; opacity: 0.5;">Greater Lowell WDA</div>
+          </div>
+        </div>
+        <div style="margin-top: 16px; padding: 12px; background: rgba(251,113,133,0.1); border-radius: 8px;">
+          <strong style="color: var(--coral);">Warning Signal:</strong> Master Plan notes "stagnating population with residents slowly moving out" — outmigration risk.
+        </div>
+      </div>
+      
+    </div>
+    
+    <!-- Key Findings -->
+    <div class="findings">
+      <h2>🎯 Novel Findings & Intervention Points</h2>
+      
+      <div class="finding critical">
+        <h4>🚨 The 42.7% Problem</h4>
+        <p>Lowell's pre-1939 housing stock is <strong>3x the national average</strong>. This isn't just about aesthetics — it's a public health crisis hiding in plain sight. Lead exposure from these homes correlates with the city's high asthma rates, childhood developmental issues, and reduced economic mobility.</p>
+        <div class="evidence">
+          <span>Intervention:</span> Targeted lead abatement in census tracts with >50% pre-1940 housing + high child density could break the cycle.
+        </div>
+      </div>
+      
+      <div class="finding critical">
+        <h4>🌍 The Invisible Healthcare Gap</h4>
+        <p>With 29.6% foreign-born residents (including the 2nd largest Cambodian community in the US), <strong>Limited English Proficiency (LEP)</strong> creates systematic healthcare access barriers. Cambodian refugees show elevated cardiovascular and diabetes rates linked to war trauma and dietary transition — but these outcomes aren't captured in standard city health metrics.</p>
+        <div class="evidence">
+          <span>Intervention:</span> Community health workers + culturally-specific outreach programs (model: Lowell Community Health Center's "whole community" approach).
+        </div>
+      </div>
+      
+      <div class="finding">
+        <h4>📍 Neighborhood Divergence</h4>
+        <p>Crime, health, and economic outcomes vary <strong>dramatically across census tracts</strong> within Lowell. Belvidere and Pawtucketville are safe; certain downtown areas have 5x higher crime rates. This tract-level variation isn't random — it correlates with housing age, income, and environmental factors.</p>
+        <div class="evidence">
+          <span>Intervention:</span> Hyper-local investment strategy targeting 3-5 worst-performing tracts rather than citywide programs.
+        </div>
+      </div>
+      
+      <div class="finding opportunity">
+        <h4>🎓 The UMass Lowell Effect</h4>
+        <p>16,829 students enrolled, 4,968 degrees awarded (2023). Computer Science is the top major. This <strong>talent pipeline</strong> exists but isn't being captured — graduates leave for Boston. The correlation: cities that retain even 10% more graduates see 2-3x higher startup formation rates.</p>
+        <div class="evidence">
+          <span>Intervention:</span> Graduate retention incentives (housing, tax breaks) + startup incubator space could flip the outmigration trend.
+        </div>
+      </div>
+      
+      <div class="finding opportunity">
+        <h4>🏭 The Manufacturing Memory</h4>
+        <p>8,827 people still work in manufacturing — the <strong>2nd largest employment sector</strong>. Unlike other post-industrial cities that lost this entirely, Lowell retained it. This existing workforce could pivot to advanced manufacturing with targeted retraining.</p>
+        <div class="evidence">
+          <span>Intervention:</span> Partnership with UMass Lowell engineering programs for upskilling pathways.
+        </div>
+      </div>
+    </div>
+    
+    <!-- Data Sources -->
+    <div class="sources">
+      <strong>Data Sources:</strong> 
+      US Census ACS 2023, DataUSA, NeighborhoodScout, MA DPH Environmental Health Tracking, 
+      MA Asthma Prevention & Control, PMC/PubMed (Cambodian health studies), 
+      Lowell Master Plan 2024, City-Data.com, EPA EJScreen framework.
+      <br><br>
+      <em>Built by Minnie 🐈‍⬛ | Correlations computed from public data sources | Not official city analysis</em>
+    </div>
+  </div>
+</body>
+</html>

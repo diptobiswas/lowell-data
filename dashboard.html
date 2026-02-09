@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lowell, MA — City Data Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FFF4D6;
+      --ink: #2A201C;
+      --amber: #F59E0B;
+      --coral: #FB7185;
+      --green: #22C55E;
+      --red: #EF4444;
+      --blue: #3B82F6;
+      --purple: #8B5CF6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Alegreya Sans', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      color: white;
+      min-height: 100vh;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+    h1, h2, h3 { font-family: 'Fraunces', serif; }
+    h1 { 
+      font-size: 2rem; 
+      margin-bottom: 8px; 
+      background: linear-gradient(135deg, var(--amber), var(--coral)); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+    }
+    .subtitle { color: rgba(255,255,255,0.6); margin-bottom: 32px; }
+    
+    /* Section Headers */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 32px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .section-header h2 { font-size: 1.3rem; }
+    .section-icon { font-size: 1.5rem; }
+    
+    /* Stat Cards Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-4px); }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .stat-value.amber { color: var(--amber); }
+    .stat-value.coral { color: var(--coral); }
+    .stat-value.green { color: var(--green); }
+    .stat-value.blue { color: var(--blue); }
+    .stat-value.purple { color: var(--purple); }
+    .stat-label { font-size: 0.85rem; color: rgba(255,255,255,0.6); }
+    .stat-change { font-size: 0.75rem; margin-top: 8px; }
+    .stat-change.up { color: var(--green); }
+    .stat-change.down { color: var(--coral); }
+    .stat-change.neutral { color: rgba(255,255,255,0.4); }
+    
+    /* Two Column Layout */
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 24px;
+    }
+    
+    /* Data Table */
+    .data-table {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .data-table table { width: 100%; border-collapse: collapse; }
+    .data-table th, .data-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .data-table th { 
+      background: rgba(255,255,255,0.05); 
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .data-table td { font-size: 0.95rem; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table .highlight { color: var(--amber); font-weight: 600; }
+    
+    /* Bar Chart */
+    .bar-chart { padding: 20px; }
+    .bar-row { margin-bottom: 16px; }
+    .bar-label { 
+      display: flex; 
+      justify-content: space-between; 
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+    }
+    .bar-track {
+      height: 12px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.5s ease;
+    }
+    .bar-fill.amber { background: linear-gradient(90deg, var(--amber), #D97706); }
+    .bar-fill.coral { background: linear-gradient(90deg, var(--coral), #DC2626); }
+    .bar-fill.blue { background: linear-gradient(90deg, var(--blue), #2563EB); }
+    .bar-fill.purple { background: linear-gradient(90deg, var(--purple), #7C3AED); }
+    .bar-fill.green { background: linear-gradient(90deg, var(--green), #16A34A); }
+    
+    /* Comparison Badges */
+    .comparison { 
+      display: flex; 
+      gap: 8px; 
+      flex-wrap: wrap;
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge.above { background: rgba(251,113,133,0.2); color: var(--coral); }
+    .badge.below { background: rgba(34,197,94,0.2); color: var(--green); }
+    .badge.at { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+    
+    /* Key Facts */
+    .key-facts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-top: 32px;
+    }
+    .fact-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px dashed rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+    .fact-card h4 {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .fact-card p { font-size: 1rem; line-height: 1.5; }
+    
+    /* Footer */
+    .footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+    }
+    
+    /* Navigation */
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 0.9rem;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      transition: all 0.2s;
+    }
+    .nav-links a:hover { background: rgba(255,255,255,0.1); color: white; }
+    .nav-links a.active { background: var(--amber); color: #1a1a2e; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="nav-links">
+      <a href="index.html">← Home</a>
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="correlations.html">Correlations</a>
+      <a href="simulator.html">Simulator</a>
+    </nav>
+    
+    <h1>🏙️ Lowell, Massachusetts</h1>
+    <p class="subtitle">Population: 114,799 | Middlesex County | Data as of 2023</p>
+    
+    <!-- Population & Demographics -->
+    <div class="section-header">
+      <span class="section-icon">👥</span>
+      <h2>Population & Demographics</h2>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value amber">114,799</div>
+        <div class="stat-label">Population</div>
+        <div class="stat-change up">+0.054% YoY</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value blue">35.5</div>
+        <div class="stat-label">Median Age</div>
+        <div class="stat-change up">+2.6% YoY</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value purple">29.6%</div>
+        <div class="stat-label">Foreign-Born</div>
+        <div class="stat-change up">+0.8% YoY</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value green">86.3%</div>
+        <div class="stat-label">US Citizens</div>
+        <div class="stat-change down">-0.7% YoY</div>
+      </div>
+    </div>
+    
+    <div class="two-col" style="margin-top: 24px;">
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Race/Ethnicity</th>
+              <th>Population</th>
+              <th>Share</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>White (Non-Hispanic)</td><td class="highlight">50,700</td><td>44.2%</td></tr>
+            <tr><td>Asian (Non-Hispanic)</td><td class="highlight">24,100</td><td>21.0%</td></tr>
+            <tr><td>Black/African American</td><td>11,500</td><td>10.1%</td></tr>
+            <tr><td>White (Hispanic)</td><td>7,700</td><td>6.7%</td></tr>
+            <tr><td>Other (Hispanic)</td><td>7,550</td><td>6.6%</td></tr>
+            <tr><td>Two or More</td><td>6,100</td><td>5.3%</td></tr>
+          </tbody>
+        </table>
+        <div class="comparison">
+          <span class="badge above">Asian pop 2x state avg</span>
+          <span class="badge above">Hispanic pop above MA avg</span>
+        </div>
+      </div>
+      
+      <div class="data-table bar-chart">
+        <h3 style="margin-bottom: 16px; font-size: 1rem;">Top Countries of Origin (Foreign-Born)</h3>
+        <div class="bar-row">
+          <div class="bar-label"><span>Cambodia</span><span>~12,000</span></div>
+          <div class="bar-track"><div class="bar-fill purple" style="width: 85%;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Brazil</span><span>~4,500</span></div>
+          <div class="bar-track"><div class="bar-fill blue" style="width: 32%;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Dominican Republic</span><span>~3,200</span></div>
+          <div class="bar-track"><div class="bar-fill amber" style="width: 23%;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Vietnam</span><span>~2,800</span></div>
+          <div class="bar-track"><div class="bar-fill coral" style="width: 20%;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Guatemala</span><span>~2,100</span></div>
+          <div class="bar-track"><div class="bar-fill green" style="width: 15%;"></div></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Economy -->
+    <div class="section-header">
+      <span class="section-icon">💰</span>
+      <h2>Economy & Employment</h2>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value green">$76,205</div>
+        <div class="stat-label">Median Household Income</div>
+        <div class="stat-change up">+4.38% YoY</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value coral">16%</div>
+        <div class="stat-label">Poverty Rate</div>
+        <div class="stat-change down">-3.73% YoY</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value blue">59,001</div>
+        <div class="stat-label">Employed Population</div>
+        <div class="stat-change down">-0.044% YoY</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value purple">0.478</div>
+        <div class="stat-label">Income GINI (MA)</div>
+        <div class="stat-change neutral">Slight inequality</div>
+      </div>
+    </div>
+    
+    <div class="two-col" style="margin-top: 24px;">
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Top Industries</th>
+              <th>Workers</th>
+              <th>Avg Salary</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Health Care & Social Assistance</td><td class="highlight">10,754</td><td>$52,000</td></tr>
+            <tr><td>Manufacturing</td><td class="highlight">8,827</td><td>$58,000</td></tr>
+            <tr><td>Retail Trade</td><td>5,882</td><td>$38,000</td></tr>
+            <tr><td>Educational Services</td><td>4,120</td><td>$56,000</td></tr>
+            <tr><td>Accommodation & Food</td><td>3,890</td><td>$28,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Top Occupations</th>
+              <th>Workers</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Production Occupations</td><td class="highlight">5,844</td></tr>
+            <tr><td>Office & Administrative Support</td><td>5,057</td></tr>
+            <tr><td>Sales & Related</td><td>4,638</td></tr>
+            <tr><td>Food Preparation & Serving</td><td>3,920</td></tr>
+            <tr><td>Healthcare Support</td><td>3,410</td></tr>
+          </tbody>
+        </table>
+        <div class="comparison">
+          <span class="badge above">Manufacturing 2x MA avg</span>
+          <span class="badge at">Services at MA avg</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Housing -->
+    <div class="section-header">
+      <span class="section-icon">🏠</span>
+      <h2>Housing & Living</h2>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value amber">$395,100</div>
+        <div class="stat-label">Median Property Value</div>
+        <div class="stat-change up">+8.9% YoY</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value coral">44%</div>
+        <div class="stat-label">Homeownership Rate</div>
+        <div class="stat-change up">+0.7% YoY</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value purple">42.7%</div>
+        <div class="stat-label">Built Before 1939</div>
+        <div class="stat-change neutral">3x national avg</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value blue">27.5 min</div>
+        <div class="stat-label">Avg Commute Time</div>
+        <div class="stat-change neutral">+0.9 min vs US</div>
+      </div>
+    </div>
+    
+    <div class="two-col" style="margin-top: 24px;">
+      <div class="data-table bar-chart">
+        <h3 style="margin-bottom: 16px; font-size: 1rem;">Housing Age Distribution</h3>
+        <div class="bar-row">
+          <div class="bar-label"><span>Built before 1939</span><span>42.7%</span></div>
+          <div class="bar-track"><div class="bar-fill coral" style="width: 85%;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>1940-1959</span><span>14.2%</span></div>
+          <div class="bar-track"><div class="bar-fill amber" style="width: 28%;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>1960-1979</span><span>18.5%</span></div>
+          <div class="bar-track"><div class="bar-fill blue" style="width: 37%;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>1980-1999</span><span>15.8%</span></div>
+          <div class="bar-track"><div class="bar-fill purple" style="width: 32%;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>2000+</span><span>8.8%</span></div>
+          <div class="bar-track"><div class="bar-fill green" style="width: 18%;"></div></div>
+        </div>
+      </div>
+      
+      <div class="data-table bar-chart">
+        <h3 style="margin-bottom: 16px; font-size: 1rem;">Commute Method</h3>
+        <div class="bar-row">
+          <div class="bar-label"><span>Drove Alone</span><span>73%</span></div>
+          <div class="bar-track"><div class="bar-fill amber" style="width: 73%;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Worked from Home</span><span>10%</span></div>
+          <div class="bar-track"><div class="bar-fill blue" style="width: 10%;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Carpooled</span><span>8.6%</span></div>
+          <div class="bar-track"><div class="bar-fill purple" style="width: 8.6%;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Public Transit</span><span>4.2%</span></div>
+          <div class="bar-track"><div class="bar-fill green" style="width: 4.2%;"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Walked/Biked</span><span>4.2%</span></div>
+          <div class="bar-track"><div class="bar-fill coral" style="width: 4.2%;"></div></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Health & Environment -->
+    <div class="section-header">
+      <span class="section-icon">🏥</span>
+      <h2>Health & Environment</h2>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value coral">Top 11</div>
+        <div class="stat-label">Asthma Burden (MA)</div>
+        <div class="stat-change neutral">Highest burden cities</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value amber">1</div>
+        <div class="stat-label">Superfund Sites</div>
+        <div class="stat-change neutral">Silresim (monitoring)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value blue">CSO</div>
+        <div class="stat-label">Sewer System Type</div>
+        <div class="stat-change down">Combined system</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value purple">High</div>
+        <div class="stat-label">Lead Exposure Risk</div>
+        <div class="stat-change down">Pre-1978 housing</div>
+      </div>
+    </div>
+    
+    <!-- Education -->
+    <div class="section-header">
+      <span class="section-icon">🎓</span>
+      <h2>Education</h2>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value blue">16,829</div>
+        <div class="stat-label">College Students</div>
+        <div class="stat-change neutral">UMass Lowell</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value green">4,968</div>
+        <div class="stat-label">Degrees Awarded (2023)</div>
+        <div class="stat-change up">Growing</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value amber">85.2%</div>
+        <div class="stat-label">Admission Rate</div>
+        <div class="stat-change neutral">Accessible</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value purple">$15,850</div>
+        <div class="stat-label">In-State Tuition</div>
+        <div class="stat-change neutral">Public 4-year</div>
+      </div>
+    </div>
+    
+    <!-- Key Facts -->
+    <div class="key-facts">
+      <div class="fact-card">
+        <h4>Historical Significance</h4>
+        <p>Lowell National Historical Park (est. 1978) preserves the city's textile mill heritage. The park draws tourism and anchors downtown revitalization.</p>
+      </div>
+      <div class="fact-card">
+        <h4>Cambodian Community</h4>
+        <p>2nd largest Cambodian population in the US. The community has shaped local culture, cuisine, and politics since refugee resettlement in the 1980s.</p>
+      </div>
+      <div class="fact-card">
+        <h4>UMass Lowell</h4>
+        <p>R1 research university with strong engineering and CS programs. Computer Science is the #1 major by degrees awarded.</p>
+      </div>
+      <div class="fact-card">
+        <h4>Transportation</h4>
+        <p>LRTA provides local bus service. Commuter rail connects to Boston North Station (~45 min). I-495 and Route 3 provide highway access.</p>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p><strong>Data Sources:</strong> US Census ACS 2023, DataUSA, MA DPH, NeighborhoodScout</p>
+      <p style="margin-top: 8px;">Dashboard built by Minnie 🐈‍⬛ | Last updated: Feb 2026</p>
+    </div>
+  </div>
+</body>
+</html>
